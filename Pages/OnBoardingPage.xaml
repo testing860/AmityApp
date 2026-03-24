@@ -1,0 +1,45 @@
+<ContentPage
+    x:Class="AmityApp.Pages.OnBoardingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{StaticResource Primary}"
+    Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="0.4*, Auto, 1.6*, Auto">
+        <Grid Grid.Row="1"
+              HorizontalOptions="Center"
+              RowDefinitions="Auto, Auto, Auto, Auto"
+              RowSpacing="0">
+            <Label Grid.Row="0"
+                   Text="Welcome"
+                   FontSize="48"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="White" />
+            <Label Grid.Row="1"
+                   Text="to"
+                   FontAttributes="Bold"
+                   FontSize="30"
+                   HorizontalOptions="Center"
+                   TextColor="White" />
+
+            <Image Grid.Row="2"
+                   Source="amity_logo.png"
+                   HorizontalOptions="Center" />
+            <Label Grid.Row="3"
+                   Text="Connect With Your Friends Now!"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="White" />
+        </Grid>
+        <StackLayout Grid.Row="3" Padding="10">
+            <Button
+        BackgroundColor="White"
+                CornerRadius="22"
+                FontAttributes="Bold"
+                FontSize="18"
+        Text="Connect Now"
+        TextColor="{StaticResource Primary}" />
+        </StackLayout>
+    </Grid>
+</ContentPage>

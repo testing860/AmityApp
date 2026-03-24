@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="AmityApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:AmityApp.Pages"
+    Title="AmityApp"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.BackgroundColor="{StaticResource Primary}"
+    Shell.ForegroundColor="White"
+    Shell.NavBarHasShadow="True"
+    Shell.TitleColor="White">
+
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate pages:OnBoardingPage}"
+        Route="OnBoardingPage" />
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate pages:HomePage}"
+        Route="HomePage" />
+
+</Shell>
