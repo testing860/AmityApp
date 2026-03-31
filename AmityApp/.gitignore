@@ -1,0 +1,46 @@
+## ========= ##
+###--- AMITY---###
+## ========= ##
+
+## Visual Studio Files ##
+**/.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+
+## Bin and Obj Folders ##
+**/bin/
+**/obj/
+
+
+## Environment Files ##
+.env
+.env.local
+*.env
+
+
+## Build Results ##
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+
+
+## MAUI / Android ##
+local.properties
+*.keystore
+*.jks
+google-services.json
+
+
+## OS Junk Files ##
+.DS_Store
+Thumbs.db
+
+
+## WIndows Packaging Signing Keys ##
+*_TemporaryKey.pfx
+AppPackages/
+BundleArtifacts/
+

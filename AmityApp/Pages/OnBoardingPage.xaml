@@ -39,7 +39,8 @@
                 FontAttributes="Bold"
                 FontSize="18"
         Text="Connect Now"
-        TextColor="{StaticResource Primary}" />
+        TextColor="{StaticResource Primary}" 
+                Clicked="Button_Clicked" />
         </StackLayout>
     </Grid>
 </ContentPage>

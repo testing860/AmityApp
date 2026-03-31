@@ -7,40 +7,61 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.suo
+*.cache
 
+## IDEs ##
+.vscode/
+.idea/
 
-## Bin and Obj Folders ##
+## Bin and Obj Folders##
 **/bin/
 **/obj/
-
-
-## Environment Files ##
-.env
-.env.local
-*.env
-
 
 ## Build Results ##
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+publish/
 
+## NuGet ##
+*.nupkg
+packages/
+
+## Environment ##
+.env
+.env.local
+*.env
+
+## Logs ##
+*.log
+*.tmp
+*.temp
 
 ## MAUI / Android ##
 local.properties
 *.keystore
 *.jks
 google-services.json
+**/platforms/android/.gradle/
+**/platforms/android/build/
 
+## Databases ##
+*.db
+*.sqlite
+*.sqlite3
 
-## OS Junk Files ##
+## OS Junk FIles##
 .DS_Store
 Thumbs.db
 
+## Mac / iOS ##
+*.app
+*.ipa
+*.dSYM
 
-## WIndows Packaging Signing Keys ##
+## Windows Packaging Signing Keys##
 *_TemporaryKey.pfx
 AppPackages/
 BundleArtifacts/
-

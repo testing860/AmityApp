@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:AmityApp.Controls"
+             x:Class="AmityApp.Pages.RegisterPage"
+             Title="Register"
+             Padding="20">
+    <ScrollView>
+        <Grid RowDefinitions="Auto, Auto, Auto"
+    RowSpacing="20"
+    VerticalOptions="Center">
+
+            <Image Grid.Row="0"
+         HeightRequest="158"
+         Source="amity_logo.png" />
+
+            <Label Grid.Row="1"
+         FontAttributes="Bold"
+         FontSize="30"
+         HorizontalOptions="Center"
+         Text="Register A New Account" />
+
+            <VerticalStackLayout Grid.Row="2" Spacing="2">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Border 
+                        HeightRequest="80" 
+                        WidthRequest="80" 
+                        StrokeShape="RoundRectangle 40"
+                        BackgroundColor="Lavender">
+                        <Image 
+                            Source="user.png" 
+                            HeightRequest="80" 
+                            WidthRequest="80" 
+                            Aspect="Center" />
+                    </Border>
+                    <Button Text="Choose a photo" 
+                            VerticalOptions="Center"/>
+
+
+                </HorizontalStackLayout>
+                <Label Text="Name" Style="{StaticResource formLabel}"/>
+
+                <controls:NoBorderEntry Placeholder="Enter your name.." />
+
+                <controls:Spacer />
+                
+                <Label Text="E-Mail" Style="{StaticResource formLabel}"/>
+
+                <controls:NoBorderEntry Placeholder="Enter a valid mail address.." />
+
+                <controls:Spacer />
+
+                <Label Text="Password" Style="{StaticResource formLabel}"/>
+                <controls:NoBorderEntry IsPassword="True" Placeholder="Enter a Password.." />
+
+                <controls:Spacer />
+                <Button Style="{StaticResource rounded}" Text="Register" />
+                <controls:Spacer />
+
+
+
+                <Grid ColumnDefinitions ="*, Auto, *" ColumnSpacing="5">
+                    <BoxView
+              Grid.Column="0"
+              Style="{StaticResource fadedLine}" />
+                    <Label 
+              Grid.Column="1"
+              HorizontalOptions ="Center" 
+              Text="Have an account already?" />
+                    <BoxView
+              Grid.Column="2"
+              Style="{StaticResource fadedLine}" />
+                </Grid>
+
+                <controls:Spacer />
+                <Button 
+                 Clicked="Button_Clicked"
+                 Style="{StaticResource rounded}" 
+                 Text="Login" />
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

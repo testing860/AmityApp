@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:AmityApp.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AmityApp.Pages.HomePage">
+
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="Auto, *, Auto">
+            <Label Grid.Column="0" 
+               Text="Amity" 
+               TextColor="White"
+               FontSize="30"
+               FontAttributes="Bold"
+               VerticalOptions="Center" 
+               TranslationY="-3"/>
+            <Grid Grid.Column="2"  
+              ColumnDefinitions="*, *, *" 
+              ColumnSpacing="25"
+              Margin="0, 0, 15, 0"
+              VerticalOptions="Center">
+                <controls:WhiteIcon Grid.Column="0"
+                                Source="plus.png"
+                                WidthRequest="25"
+                                HeightRequest="25"/>
+                <Grid Grid.Column="1">
+                    <controls:WhiteIcon Source="bell.png"
+                                    WidthRequest="25"
+                                    HeightRequest="25"/>
+                    <Ellipse Fill="#2ECC71" 
+                         HeightRequest="12.5"
+                         WidthRequest="12.5"
+                         HorizontalOptions="End"
+                         VerticalOptions="Start"/>
+                </Grid>
+                <controls:WhiteIcon Grid.Column="2"
+                                Source="user.png"
+                                WidthRequest="25"
+                                HeightRequest="25" />
+            </Grid>
+        </Grid>
+    </Shell.TitleView>
+
+</ContentPage>
