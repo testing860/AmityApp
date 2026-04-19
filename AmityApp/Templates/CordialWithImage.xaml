@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AmityApp.Templates.CordialWithImage"
+             xmlns:controls="clr-namespace:AmityApp.Controls"
+             xmlns:dtos="clr-namespace:AmityApp.Shared.Dtos;assembly=AmityApp.Shared"
+             xmlns:models="clr-namespace:AmityApp.Models"
+             xmlns:converters="clr-namespace:AmityApp.Converters"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             x:DataType="models:CordialModel">
+
+    <Border Padding="0, 8" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+        <Grid RowDefinitions="Auto, 250, Auto, Auto" RowSpacing="6">
+            <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
+                <Border Grid.Column="0"
+                        HeightRequest="40"
+                        StrokeShape="RoundRectangle 20"
+                        BackgroundColor="{StaticResource Surface}"
+                        WidthRequest="40">
+                    <Image 
+                        Source="{Binding FullUserPhotoUrl}"
+                        Aspect="AspectFit"
+                        HeightRequest="30"
+                        WidthRequest="30"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"/>
+                </Border>
+                <Grid
+                    Grid.Column="1"
+                    ColumnDefinitions="Auto, Auto, Auto"
+                    ColumnSpacing="5"
+                    VerticalOptions="Center">
+                    <Label
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        Text="{Binding UserName}" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        Text="·" 
+                        FontSize="14"
+                        Margin="0, -7, 0, 0"
+                        VerticalOptions="Center"/>
+                    <!-- ✅ Relative time converter applied here -->
+                    <Label
+                        Grid.Column="2"
+                        FontSize="12"
+                        Text="{Binding PostedOnDisplay, Converter={StaticResource RelativeTimeConverter}}"
+                        VerticalOptions="Center"/>
+                </Grid>
+            </Grid>
+
+            <Border Grid.Row="1"
+                    BackgroundColor="{StaticResource Surface}"
+                    HeightRequest="250"
+                    StrokeThickness="0">
+                <Image Aspect="Center"
+                       HeightRequest="250"
+                       Source="{Binding FullPhotoUrl}" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:BaseCordialViewModel}}, Path=GoToDetailsPageCommand}" CommandParameter="{Binding .}"/>
+                </Border.GestureRecognizers>
+            </Border>
+            <Label
+                Grid.Row="2"
+                FontSize="15"
+                Text="{Binding Content}"
+                TextColor="{StaticResource SecondaryDarkText}" 
+                Padding="8, 0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:BaseCordialViewModel}}, Path=GoToDetailsPageCommand}" CommandParameter="{Binding .}"/>
+                </Label.GestureRecognizers>
+                </Label>
+
+            <VerticalStackLayout Grid.Row="3" Spacing="10">
+                <BoxView Style="{StaticResource fadedLine}" />
+                <FlexLayout JustifyContent="SpaceAround">
+                    <HorizontalStackLayout Spacing="2">
+                        <controls:PrimaryColorImage 
+                            HeightRequest="20"
+                            Source="{Binding IsLitIcon}"
+                            VerticalOptions="Center"
+                            WidthRequest="20" />
+                        <Label
+                            FontSize="12"
+                            Text="Light"
+                            VerticalOptions="Center" />
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:BaseCordialViewModel}}, Path=ToggleCandleCommand}" CommandParameter="{Binding .}"/>
+                        </HorizontalStackLayout.GestureRecognizers>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="2">
+                        <controls:PrimaryColorImage 
+                            HeightRequest="20"
+                            Source="bubble.png"
+                            VerticalOptions="Center"
+                            WidthRequest="20" />
+                        <Label
+                            FontSize="12"
+                            Text="Comment"
+                            VerticalOptions="Center" />
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:BaseCordialViewModel}}, Path=GoToDetailsPageCommand}" CommandParameter="{Binding .}"/>
+                        </HorizontalStackLayout.GestureRecognizers>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="2">
+                        <controls:PrimaryColorImage 
+                            HeightRequest="20"
+                            Source="{Binding IsCrownedIcon}"
+                            VerticalOptions="Center"
+                            WidthRequest="20" />
+                        <Label
+                            FontSize="12"
+                            Text="Save"
+                            VerticalOptions="Center" />
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:BaseCordialViewModel}}, Path=ToggleCrownCommand}" CommandParameter="{Binding .}"/>
+                        </HorizontalStackLayout.GestureRecognizers>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="2">
+                        <controls:PrimaryColorImage 
+                            HeightRequest="20"
+                            Source="share.svg"
+                            VerticalOptions="Center"
+                            WidthRequest="20" />
+                        <Label
+                            FontSize="12"
+                            Text="Share"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </FlexLayout>
+            </VerticalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

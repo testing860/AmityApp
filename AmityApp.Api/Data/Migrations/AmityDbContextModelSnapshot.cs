@@ -180,6 +180,42 @@ namespace AmityApp.Api.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("AmityApp.Shared.Dtos.CordialDto", b =>
+                {
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CordialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("EditedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCrowned")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLit")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PostedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserPhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("CordialDto");
+                });
+
             modelBuilder.Entity("AmityApp.Api.Data.Entities.Candle", b =>
                 {
                     b.HasOne("AmityApp.Api.Data.Entities.Cordial", "Cordial")

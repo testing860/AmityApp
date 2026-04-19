@@ -12,5 +12,6 @@ public partial class OnBoardingPage : ContentPage
 	private async void Button_Clicked(object sender, EventArgs e)
 	{
         await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+		Preferences.Default.Set(InitPage.FirstLaunchKey, true);
     }
 }

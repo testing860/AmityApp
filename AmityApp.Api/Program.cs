@@ -1,5 +1,11 @@
-using AmityApp.Api.Data;
+﻿using AmityApp.Api.Data;
+using AmityApp.Api.Data.Entities;
+using AmityApp.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SocialMediaMaui.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +16,56 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AmityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+builder.Services.AddTransient<AuthService>()
+                .AddTransient<CordialService>()
+                .AddTransient<IPasswordHasher<User>, PasswordHasher<User>>()
+                .AddTransient<UserService>()
+                .AddTransient<PhotoUploadService>();
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    var issuer = builder.Configuration.GetValue<string>("Jwt:Issuer");
+    var secretKey = builder.Configuration.GetValue<string>("Jwt:SecretKey");
+    var securityKey = System.Text.Encoding.UTF8.GetBytes(secretKey);
+    var symmetricKey = new SymmetricSecurityKey(securityKey);
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = symmetricKey,
+        ValidateAudience = false
+    };
+
+    // Development Issuer for Android Emulator
+    if (builder.Environment.IsDevelopment())
+    {
+        options.TokenValidationParameters.ValidIssuers = new[]
+        {
+            issuer,
+            "https://10.0.2.2:7134"
+        };
+    }
+    else
+    {
+        options.TokenValidationParameters.ValidIssuer = issuer;
+    }
+});
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
+#if DEBUG
+AutoMigrateDb(app.Services);
+#endif
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -18,30 +73,43 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 
-var summaries = new[]
+// Alow Https Redirection for Development
+if (!app.Environment.IsDevelopment())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    app.UseHttpsRedirection();
+}
 
-app.MapGet("/weatherforecast", () =>
+app.UseStaticFiles();
+
+app.UseAuthentication()
+   .UseAuthorization();
+
+
+app.MapAuthEndpoints()
+    .MapCordialsEndpoints()
+    .MapUserEndpoints();
+
+app.MapGet("/ping", () =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var html = """
+    <!DOCTYPE html>
+    <html>
+    <head><style>body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#1e1e2e;font-family:system-ui,sans-serif;flex-direction:column}h1{font-size:6rem;color:#a6e3a1;margin:0}h2{font-size:3rem;color:#6c7086;margin:0;font-weight:400}</style></head>
+    <body><h1>pong!</h1><h2>Amity API is running.</h2></body>
+    </html>
+    """;
+    return Results.Content(html, "text/html");
+});
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+static void AutoMigrateDb(IServiceProvider sp)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    var scope = sp.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<AmityDbContext>();
+    if (context.Database.GetPendingMigrations().Any())
+        {
+        context.Database.Migrate();
+        }
 }

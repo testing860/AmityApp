@@ -1,4 +1,5 @@
 ﻿using AmityApp.Api.Data.Entities;
+using AmityApp.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmityApp.Api.Data;
@@ -15,9 +16,18 @@ namespace AmityApp.Api.Data;
     public DbSet<Crown> Crowns { get; set; }
     public DbSet<Candle> Candles { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<CordialDto>().HasNoKey();
 
         modelBuilder.Entity<Candle>(e =>
         {

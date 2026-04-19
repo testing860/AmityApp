@@ -1,0 +1,31 @@
+﻿using AmityApp.Api.Services;
+using AmityApp.Shared.Dtos;
+
+namespace SocialMediaMaui.Api.Endpoints;
+
+public static class AuthEndpoints
+{
+    public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder app)
+    {
+        var authGroup = app.MapGroup("/api/auth")
+                           .WithTags("Auth");
+
+        authGroup.MapPost("/register", async (RegisterDto dto, AuthService authService) =>
+        Results.Ok(await authService.RegisterAsync(dto)))
+        .Produces<ApiResult<Guid>>()
+        .WithName("Auth-Register");
+
+        authGroup.MapPost("/register/{userId:guid}/add-photo", async (Guid userId, IFormFile photo, AuthService authService) =>
+        Results.Ok(await authService.UploadPhotoAsync(userId, photo)))
+        .DisableAntiforgery()
+        .Produces<ApiResult>()
+        .WithName("Auth-AddPhoto-to-User");
+
+        authGroup.MapPost("/login", async (LoginDto dto, AuthService authService) =>
+        Results.Ok(await authService.LoginAsync(dto)))
+        .Produces<ApiResult<LoginResponseDto>>()
+        .WithName("Auth-Login");
+
+        return app;
+    }
+}

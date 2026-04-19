@@ -1,12 +1,14 @@
+using AmityApp.ViewModels;
 using System.Threading.Tasks;
 
 namespace AmityApp.Pages;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+	public LoginPage(LoginViewModel loginViewModel)
 	{
 		InitializeComponent();
+        BindingContext = loginViewModel;
 	}
 
     private async void LoginBtn_Clicked(object sender, EventArgs e)

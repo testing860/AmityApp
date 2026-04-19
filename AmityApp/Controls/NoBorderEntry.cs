@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 namespace AmityApp.Controls;
 public class NoBorderEntry : Entry
 {
+    public NoBorderEntry()
+    {
+        this.TextColor = (Color)Application.Current.Resources["SecondaryDarkText"];
+        this.PlaceholderColor = (Color)Application.Current.Resources["Placeholder"];
+    }
+
     protected override void OnHandlerChanged()
     {
         base.OnHandlerChanged();
@@ -17,7 +23,6 @@ public class NoBorderEntry : Entry
     }
 
     protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
-
     {
         base.OnPropertyChanged(propertyName);
 #if ANDROID
@@ -31,7 +36,7 @@ public class NoBorderEntry : Entry
 #if ANDROID
         if (Handler is IEntryHandler entryHandler)
         {
-            if(BackgroundColor == null)
+            if (BackgroundColor == null)
             {
                 entryHandler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
             }
@@ -42,7 +47,4 @@ public class NoBorderEntry : Entry
         }
 #endif
     }
-
-
 }
-

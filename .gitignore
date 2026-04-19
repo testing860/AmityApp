@@ -65,3 +65,7 @@ Thumbs.db
 *_TemporaryKey.pfx
 AppPackages/
 BundleArtifacts/
+
+## Amity-Specific ##
+**/wwwroot/uploads/          # Ignore all test images uploaded during development
+appsettings.Production.json  # Ignore production config (currently none exists anyway, but still)

@@ -5,24 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AmityApp.Controls
+namespace AmityApp.Controls;
+
+public class WhiteIcon : Image
 {
-        public class WhiteIcon : Image
+
+    public WhiteIcon()
     {
+        var tintColorBehavior = Behaviors.FirstOrDefault(b => b is IconTintColorBehavior);
+        if (tintColorBehavior == null)
 
-        public WhiteIcon()
         {
-            var tintColorBehavior = Behaviors.FirstOrDefault(b => b is IconTintColorBehavior);
-            if (tintColorBehavior == null)
-
+            tintColorBehavior = new IconTintColorBehavior
             {
-                tintColorBehavior = new IconTintColorBehavior
-                {
-                    TintColor = Colors.White
-                };
-                Behaviors.Add(tintColorBehavior);
-
-            }
+                TintColor = Colors.White
+            };
+            Behaviors.Add(tintColorBehavior);
 
         }
 

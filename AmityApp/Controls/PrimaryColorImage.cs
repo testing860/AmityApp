@@ -1,0 +1,28 @@
+﻿using CommunityToolkit.Maui.Behaviors;
+using System.Drawing;
+using Color = Microsoft.Maui.Graphics.Color;
+
+namespace AmityApp.Controls;
+
+public class PrimaryColorImage : Image
+{
+
+    public PrimaryColorImage()
+    {
+        if(App.Current.Resources.TryGetValue("Primary", out object color ) && color is Color primaryColor)
+        {
+            var tintColorBehavior = Behaviors.FirstOrDefault(b => b is IconTintColorBehavior);
+            if (tintColorBehavior == null)
+
+            {
+                tintColorBehavior = new IconTintColorBehavior
+                {
+                    TintColor = primaryColor
+                };
+                Behaviors.Add(tintColorBehavior);
+
+            }
+        }
+
+    }
+}

@@ -13,6 +13,10 @@ namespace AmityApp
         private static void RegisterRoutes()
         {
             Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
+            Routing.RegisterRoute(nameof(CordialDetailsPage), typeof(CordialDetailsPage));
+            Routing.RegisterRoute(nameof(AddCordialPage), typeof(AddCordialPage));
+            Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
+            Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
         }
     }
 }

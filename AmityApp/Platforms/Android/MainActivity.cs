@@ -13,7 +13,7 @@ namespace AmityApp
 
             if (Window != null)
             {
-                Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#F15D5D"));
+                Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#CA3538"));
             }
         }
     }

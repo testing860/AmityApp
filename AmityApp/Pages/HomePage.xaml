@@ -3,7 +3,10 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:controls="clr-namespace:AmityApp.Controls"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AmityApp.Pages.HomePage">
+             x:Class="AmityApp.Pages.HomePage"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             BackgroundColor="{StaticResource Background}"
+             x:DataType="vm:HomeViewModel">
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="Auto, *, Auto">
@@ -20,9 +23,13 @@
               Margin="0, 0, 15, 0"
               VerticalOptions="Center">
                 <controls:WhiteIcon Grid.Column="0"
-                                Source="plus.png"
+                                Source="circle_plus.png"
                                 WidthRequest="25"
-                                HeightRequest="25"/>
+                                HeightRequest="25">
+                    <controls:WhiteIcon.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToAddCordialCommand}"/>
+                    </controls:WhiteIcon.GestureRecognizers>
+                </controls:WhiteIcon>
                 <Grid Grid.Column="1">
                     <controls:WhiteIcon Source="bell.png"
                                     WidthRequest="25"
@@ -32,13 +39,58 @@
                          WidthRequest="12.5"
                          HorizontalOptions="End"
                          VerticalOptions="Start"/>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="GoToNotifications_Tapped" />
+                    </Grid.GestureRecognizers>
                 </Grid>
                 <controls:WhiteIcon Grid.Column="2"
                                 Source="user.png"
                                 WidthRequest="25"
-                                HeightRequest="25" />
+                                HeightRequest="25">
+                    <controls:WhiteIcon.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="GoToProfile_Tapped" />
+                    </controls:WhiteIcon.GestureRecognizers>
+                </controls:WhiteIcon>
             </Grid>
         </Grid>
     </Shell.TitleView>
+    <RefreshView Command="{Binding RefreshCordialsCommand}" IsRefreshing="{Binding IsRefreshing}">
+        <Grid>
+            <CollectionView ItemsSource="{Binding Cordials}" 
+                        ItemTemplate="{StaticResource cordialDataTemplateSelector}"
+                        RemainingItemsThreshold="2"
+                        RemainingItemsThresholdReachedCommand="{Binding FetchCordialsCommand}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="15"/>
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+            <Border BackgroundColor="{StaticResource Primary}"
+                HeightRequest="40" 
+                WidthRequest="40"
+                Margin="10, 25"
+                StrokeShape="RoundRectangle 15"
+                HorizontalOptions="End"
+                VerticalOptions="End">
+                <controls:WhiteIcon Source="plus.png"
+                                HeightRequest="24"
+                                WidthRequest="24"/>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Radius="25"/>
+                </Border.Shadow>
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="0.5, 1">
+                        <GradientStop Offset="0.0" Color="{StaticResource Secondary}" />
+                        <GradientStop Offset="1.0" Color="{StaticResource Primary}" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToAddCordialCommand}" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+        </Grid>
+    </RefreshView>
 
 </ContentPage>

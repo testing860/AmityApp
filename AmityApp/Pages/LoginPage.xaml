@@ -4,58 +4,72 @@
              xmlns:controls="clr-namespace:AmityApp.Controls"
              x:Class="AmityApp.Pages.LoginPage"
              Title="Login"
-             Padding="20">
-    <ScrollView>
-        <Grid RowDefinitions="Auto, Auto, Auto"
-       RowSpacing="20"
-       VerticalOptions="Center">
+             Padding="20"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             x:DataType="vm:LoginViewModel">
+    <Grid>
+        <ScrollView>
+            <Grid RowDefinitions="Auto, Auto, Auto"
+              RowSpacing="20"
+              VerticalOptions="Center">
 
-            <Image Grid.Row="0"
-            HeightRequest="158"
-            Source="amity_logo.png" />
+                <!-- LOGO  -->
+                <Image Grid.Row="0"
+                   HeightRequest="130"
+                   Source="amity_logo.png" />
 
-            <Label Grid.Row="1"
-            FontAttributes="Bold"
-            FontSize="30"
-            HorizontalOptions="Center"
-            Text="Login" />
+                <Label Grid.Row="1"
+                   FontAttributes="Bold"
+                   FontSize="30"
+                   HorizontalOptions="Center"
+                   Text="Sign In" />
 
-            <VerticalStackLayout Grid.Row="2" Spacing="2">
-                <Label Text="Username" Style="{StaticResource formLabel}"/>
+                <VerticalStackLayout Grid.Row="2" Spacing="2">
+                    <Label Text="Username" Style="{StaticResource formLabel}"/>
+                    <controls:NoBorderEntry Placeholder="Enter your username.." Text="{Binding Email}" Keyboard="Email" />
 
-                <controls:NoBorderEntry Placeholder="Enter a Username.." />
+                    <controls:Spacer />
 
-                <controls:Spacer />
+                    <Label Text="Password" Style="{StaticResource formLabel}"/>
+                    <controls:NoBorderEntry IsPassword="True" Placeholder="Enter your password.." Text="{Binding Password}" />
 
-                <Label Text="Password" Style="{StaticResource formLabel}"/>
-                <controls:NoBorderEntry IsPassword="True" Placeholder="Enter a Password.." />
+                    <controls:Spacer />
 
-                <controls:Spacer />
-                <Button Style="{StaticResource rounded}" Text="Login" Clicked="LoginBtn_Clicked"/>
-                <controls:Spacer />
+                    <!-- ===== LOGIN BUTTON ===== -->
+                    <Button Style="{StaticResource rounded}" 
+                        Text="Login" 
+                        Command="{Binding LoginCommand}"
+                        HeightRequest="56"
+                        FontSize="18"
+                        FontAttributes="Bold" />
 
+                    <controls:Spacer />
 
+                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="5">
+                        <BoxView Grid.Column="0" Style="{StaticResource fadedLine}" />
+                        <Label Grid.Column="1"
+                           HorizontalOptions="Center" 
+                           Text="New user? Join Amity now!" />
+                        <BoxView Grid.Column="2" Style="{StaticResource fadedLine}" />
+                    </Grid>
 
-                <Grid ColumnDefinitions ="*, Auto, *" ColumnSpacing="5">
-                    <BoxView
-                 Grid.Column="0"
-                 Style="{StaticResource fadedLine}" />
-                    <Label 
-                 Grid.Column="1"
-                 HorizontalOptions ="Center" 
-                 Text="New user? Join Amity now!" />
-                    <BoxView
-                 Grid.Column="2"
-                 Style="{StaticResource fadedLine}" />
-                </Grid>
+                    <controls:Spacer />
 
-                <controls:Spacer />
-                <Button 
-                    Clicked="RegisterBtn_Clicked"
-                    Style="{StaticResource rounded}" 
-                    Text="Create New Account" />
-            </VerticalStackLayout>
+                    <!-- ===== REGISTER BUTTON (secondary) ===== -->
+                    <Button Clicked="RegisterBtn_Clicked"
+                        Text="Create Account"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Secondary}"
+                        BorderWidth="0"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Padding="20,10" />
 
-        </Grid>
-    </ScrollView>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
 </ContentPage>

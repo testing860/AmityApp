@@ -4,43 +4,58 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource Primary}"
     Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="0.4*, Auto, 1.6*, Auto">
-        <Grid Grid.Row="1"
-              HorizontalOptions="Center"
-              RowDefinitions="Auto, Auto, Auto, Auto"
-              RowSpacing="0">
-            <Label Grid.Row="0"
-                   Text="Welcome"
-                   FontSize="48"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="White" />
-            <Label Grid.Row="1"
-                   Text="to"
-                   FontAttributes="Bold"
-                   FontSize="30"
-                   HorizontalOptions="Center"
-                   TextColor="White" />
 
-            <Image Grid.Row="2"
-                   Source="amity_logo.png"
-                   HorizontalOptions="Center" />
-            <Label Grid.Row="3"
-                   Text="Connect With Your Friends Now!"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="White" />
-        </Grid>
-        <StackLayout Grid.Row="3" Padding="10">
-            <Button
-        BackgroundColor="White"
-                CornerRadius="22"
-                FontAttributes="Bold"
-                FontSize="18"
-        Text="Connect Now"
-        TextColor="{StaticResource Primary}" 
-                Clicked="Button_Clicked" />
-        </StackLayout>
+    <Grid RowDefinitions="*, Auto, Auto, *"
+          RowSpacing="20">
+
+        <BoxView Grid.Row="0" BackgroundColor="Transparent" />
+
+        <!-- Main Content Block -->
+        <VerticalStackLayout Grid.Row="1"
+                     HorizontalOptions="Center"
+                     Spacing="8">
+
+            <Label Text="Welcome"
+           FontSize="48"
+           FontFamily="PlusJakartaSansBold"
+           HorizontalOptions="Center"
+           TextColor="White" />
+
+            <Label Text="to"
+           FontFamily="PlusJakartaSansBold"
+           FontSize="30"
+           HorizontalOptions="Center"
+           TextColor="White" />
+
+            <Image Source="amity_logo.png"
+           HeightRequest="200"
+           HorizontalOptions="Center"
+           Margin="0,20" />
+
+            <Label Text="Connect With Your Friends Now!"
+           FontSize="20"
+           FontFamily="PlusJakartaSansBold"
+           HorizontalOptions="Center"
+           TextColor="White" />
+        </VerticalStackLayout>
+
+        <!-- Button Block -->
+        <VerticalStackLayout Grid.Row="2"
+                             Padding="30,10"
+                             Spacing="10">
+
+            <!-- Primary Action: Connect NOW! -->
+            <Button BackgroundColor="White"
+                    CornerRadius="22"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Get Started"
+                    TextColor="{StaticResource Primary}" 
+                    Clicked="Button_Clicked"
+                    HeightRequest="56" />
+        </VerticalStackLayout>
+
+        <BoxView Grid.Row="3" BackgroundColor="Transparent" />
+
     </Grid>
 </ContentPage>

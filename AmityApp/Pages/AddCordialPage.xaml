@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AmityApp.Pages.AddCordialPage"
+            xmlns:controls="clr-namespace:AmityApp.Controls"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             Title="Create Cordial"
+             Padding="15"
+             x:DataType="vm:SaveCordialViewModel">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto, *, Auto, Auto" RowSpacing="5">
+            <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
+                <Border Grid.Column="0"
+                                HeightRequest="40"
+                                StrokeShape="RoundRectangle 20"
+                                BackgroundColor="{StaticResource Surface}"
+                                WidthRequest="40">
+                    <Image 
+                                     Source="user.png"
+                                     Aspect="AspectFit"
+                                     HeightRequest="30"
+                                     WidthRequest="30"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"/>
+                </Border>
+                <Label
+                     Grid.Column="1"
+                    FontAttributes="Bold"
+                    Text="Jim Placeholder" 
+                    VerticalOptions="Center"/>
+            </Grid>
+
+            <controls:NoBorderEditor Grid.Row="1" 
+                                     BackgroundColor="{StaticResource Surface}" 
+                                     Placeholder="Start typing.."
+                                     Text="{Binding Content}" />
+
+            <Grid Grid.Row="2">
+                <Border StrokeThickness="3" Stroke="{StaticResource Primary}" BackgroundColor="Transparent" HeightRequest="250">
+                    <Image HeightRequest="250" Source="{Binding PhotoPath}"/>
+                </Border>
+                <Border StrokeShape="RoundRectangle 5" HeightRequest="40" WidthRequest="40"
+                        BackgroundColor="{StaticResource Primary}"
+                        VerticalOptions="Start"
+                        StrokeThickness="0"
+                        HorizontalOptions="End"
+                        Margin="7">
+                    <controls:WhiteIcon Source="trash.png" HeightRequest="27" WidthRequest="27" />
+                    <Border.Shadow>
+                        <Shadow />
+                    </Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding RemovePhotoCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+                <Grid.Triggers>
+                    <DataTrigger TargetType="Grid" Binding="{Binding PhotoPath}" Value="">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Grid.Triggers>
+            </Grid>
+
+            <FlexLayout Grid.Row="3" JustifyContent="SpaceBetween" Padding="0, 0, 0, 2">
+
+                <Border StrokeShape="RoundRectangle 22" Stroke="{StaticResource Primary}" Padding="15, 5">
+                    <HorizontalStackLayout Spacing="5">
+                        <controls:PrimaryColorImage Source="photo.png" HeightRequest="25" WidthRequest="25"/>
+                        <Label Text="Change Photo" VerticalOptions="Center" FontAttributes="Bold">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding PhotoPath}" Value="">
+                                    <Setter Property="Text" Value="Add Photo" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectPhotoCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Button Style="{StaticResource rounded} " 
+                        Command="{Binding SaveCordialCommand}"
+                        Text="Publish" 
+                        Padding="30, 0" 
+                        FontAttributes="Bold" />
+                
+            </FlexLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

@@ -4,81 +4,92 @@
              xmlns:controls="clr-namespace:AmityApp.Controls"
              x:Class="AmityApp.Pages.RegisterPage"
              Title="Register"
-             Padding="20">
-    <ScrollView>
-        <Grid RowDefinitions="Auto, Auto, Auto"
-    RowSpacing="20"
-    VerticalOptions="Center">
+             Padding="20"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             x:DataType="vm:RegisterViewModel">
+    <Grid>
+        <ScrollView>
+            <Grid RowDefinitions="Auto, Auto, Auto"
+              RowSpacing="20"
+              VerticalOptions="Center">
 
-            <Image Grid.Row="0"
-         HeightRequest="158"
-         Source="amity_logo.png" />
+                <Image Grid.Row="0"
+                   HeightRequest="130"
+                   Source="amity_logo.png" />
 
-            <Label Grid.Row="1"
-         FontAttributes="Bold"
-         FontSize="30"
-         HorizontalOptions="Center"
-         Text="Register A New Account" />
+                <Label Grid.Row="1"
+                   FontAttributes="Bold"
+                   FontSize="30"
+                   HorizontalOptions="Center"
+                   Text="Create Account" />
 
-            <VerticalStackLayout Grid.Row="2" Spacing="2">
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                    <Border 
+                <VerticalStackLayout Grid.Row="2" Spacing="2">
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Border 
                         HeightRequest="80" 
                         WidthRequest="80" 
                         StrokeShape="RoundRectangle 40"
-                        BackgroundColor="Lavender">
-                        <Image 
+                        BackgroundColor="{StaticResource Surface}">
+                            <Image 
                             Source="user.png" 
                             HeightRequest="80" 
                             WidthRequest="80" 
                             Aspect="Center" />
-                    </Border>
-                    <Button Text="Choose a photo" 
+                        </Border>
+                        <Button Text="Choose a photo" 
                             VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
 
+                    <Label Text="Name" Style="{StaticResource formLabel}"/>
+                    <controls:NoBorderEntry Placeholder="Enter your name.." Text="{Binding Name}" />
 
-                </HorizontalStackLayout>
-                <Label Text="Name" Style="{StaticResource formLabel}"/>
+                    <controls:Spacer />
 
-                <controls:NoBorderEntry Placeholder="Enter your name.." />
+                    <Label Text="E-Mail" Style="{StaticResource formLabel}"/>
+                    <controls:NoBorderEntry Placeholder="hello@example.com" Text="{Binding Email}" Keyboard="Email" />
 
-                <controls:Spacer />
-                
-                <Label Text="E-Mail" Style="{StaticResource formLabel}"/>
+                    <controls:Spacer />
 
-                <controls:NoBorderEntry Placeholder="Enter a valid mail address.." />
+                    <Label Text="Password" Style="{StaticResource formLabel}"/>
+                    <controls:NoBorderEntry IsPassword="True" Placeholder="Enter a password.." Text="{Binding Password}" />
 
-                <controls:Spacer />
+                    <controls:Spacer />
 
-                <Label Text="Password" Style="{StaticResource formLabel}"/>
-                <controls:NoBorderEntry IsPassword="True" Placeholder="Enter a Password.." />
+                    <!-- ===== REGISTER BUTTON ===== -->
+                    <Button Style="{StaticResource rounded}" 
+                        Text="Register" 
+                        HeightRequest="56"
+                        FontSize="18"
+                        FontAttributes="Bold" 
+                        Command="{Binding RegisterCommand}"/>
 
-                <controls:Spacer />
-                <Button Style="{StaticResource rounded}" Text="Register" />
-                <controls:Spacer />
+                    <controls:Spacer />
 
+                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="5">
+                        <BoxView Grid.Column="0" Style="{StaticResource fadedLine}" />
+                        <Label Grid.Column="1"
+                           HorizontalOptions="Center" 
+                           Text="OR have an account already?" />
+                        <BoxView Grid.Column="2" Style="{StaticResource fadedLine}" />
+                    </Grid>
 
+                    <controls:Spacer />
 
-                <Grid ColumnDefinitions ="*, Auto, *" ColumnSpacing="5">
-                    <BoxView
-              Grid.Column="0"
-              Style="{StaticResource fadedLine}" />
-                    <Label 
-              Grid.Column="1"
-              HorizontalOptions ="Center" 
-              Text="Have an account already?" />
-                    <BoxView
-              Grid.Column="2"
-              Style="{StaticResource fadedLine}" />
-                </Grid>
+                    <!-- ===== LOGIN BUTTON ===== -->
+                    <Button Clicked="Button_Clicked"
+                        Text="Login"
+                        BackgroundColor="Transparent"
+                       TextColor="{StaticResource Secondary}"
+                        BorderWidth="0"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Padding="20,10" />
 
-                <controls:Spacer />
-                <Button 
-                 Clicked="Button_Clicked"
-                 Style="{StaticResource rounded}" 
-                 Text="Login" />
-            </VerticalStackLayout>
-
-        </Grid>
-    </ScrollView>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
 </ContentPage>

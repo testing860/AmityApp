@@ -11,6 +11,10 @@
     Shell.NavBarHasShadow="True"
     Shell.TitleColor="White">
 
+    <ShellContent
+        Title=""
+        ContentTemplate="{DataTemplate pages:InitPage}"
+        Route="InitPage" />
 
     <ShellContent
         Title="Home"
@@ -26,5 +30,4 @@
         Title="Home"
         ContentTemplate="{DataTemplate pages:HomePage}"
         Route="HomePage" />
-
 </Shell>
