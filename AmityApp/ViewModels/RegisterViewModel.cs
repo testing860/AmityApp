@@ -4,9 +4,11 @@ using AmityApp.Shared.Dtos;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Refit;
 
 namespace AmityApp.ViewModels;
 
+[QueryProperty(nameof(CroppedPhotoSource), "new-src")]
 public partial class RegisterViewModel : BaseViewModel
 {
     private readonly IAuthApi _authApi;
@@ -22,6 +24,9 @@ public partial class RegisterViewModel : BaseViewModel
 
     [ObservableProperty]
     private string _password;
+
+    [ObservableProperty]
+    private string _photoImageSource = "user.png";
 
 
     [RelayCommand]
@@ -45,10 +50,48 @@ public partial class RegisterViewModel : BaseViewModel
 
             var userId = result.Data;
 
-            // Upload photo if provided
+            if(!string.IsNullOrWhiteSpace(PhotoImageSource) && PhotoImageSource != "user.png")
+            {
+                var photoName = Path.GetFileName(PhotoImageSource);
+                using var fs = File.OpenRead(PhotoImageSource);
+
+                var photoStreamPart = new StreamPart(fs, photoName);
+
+                var apiResult = await _authApi.UploadPhotoAsync(userId, photoStreamPart);
+                if (!result.IsSuccess)
+                {
+                    await ToastAsync("Photo upload failed");
+                }
+            }
 
             await ToastAsync($"SUCCESS: You have just registered successfully, {(string.IsNullOrWhiteSpace(Name) ? "User" : Name)}!");
             await NavigateAsync($"//{nameof(LoginPage)}");
         });
+    }
+
+    [RelayCommand]
+    private async Task SelectPhotoAsync()
+    {
+        var selectedPhotoSource = await ChoosePhotoAsync();
+        if (!string.IsNullOrWhiteSpace(selectedPhotoSource))
+        {
+            var param = new Dictionary<string, object>
+            {
+                [nameof(CropPhotoPage.PhotoSource)] = selectedPhotoSource
+            };
+
+            await NavigateAsync(nameof(CropPhotoPage), param);
+        }
+    }
+
+    [ObservableProperty]
+    private string? _croppedPhotoSource;
+
+    async partial void OnCroppedPhotoSourceChanged(string? oldValue, string? newValue)
+    {
+        if (!string.IsNullOrWhiteSpace(newValue))
+        {
+            PhotoImageSource = newValue;
+        }
     }
 }

@@ -31,13 +31,14 @@
                         StrokeShape="RoundRectangle 40"
                         BackgroundColor="{StaticResource Surface}">
                             <Image 
-                            Source="user.png" 
+                            Source="{Binding PhotoImageSource}" 
                             HeightRequest="80" 
                             WidthRequest="80" 
                             Aspect="Center" />
                         </Border>
-                        <Button Text="Choose a photo" 
-                            VerticalOptions="Center"/>
+                        <Button Text="Choose a photo"
+                            VerticalOptions="Center"
+                                Command="{Binding SelectPhotoCommand}"/>
                     </HorizontalStackLayout>
 
                     <Label Text="Name" Style="{StaticResource formLabel}"/>

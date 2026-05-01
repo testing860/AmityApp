@@ -29,6 +29,20 @@ public static class UserEndpoints
             .Produces<CordialDto[]>()
             .WithName("GetUserCrownedCordials");
 
+            userGroup.MapGet("/chimes", async (int startIndex, int pageSize, UserService userService, ClaimsPrincipal principal) =>
+            Results.Ok(await userService.GetChimesAsync(startIndex, pageSize, principal.GetUserId())))
+            .Produces<ChimeDto[]>()
+            .WithName("GetChimes");
+
+        userGroup.MapGet("/search", async (string email, UserService userService) =>
+        {
+            var user = await userService.FindUserByEmailAsync(email);
+            if (user is null)
+                return Results.Ok(ApiResult<UserDto?>.Failure(
+                    "User not found. Verify you have entered the e-mail correctly or try another e-mail address."));
+            return Results.Ok(ApiResult<UserDto?>.Success(user));
+        });
+
         return app;
     }
 }

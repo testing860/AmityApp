@@ -15,19 +15,18 @@ namespace AmityApp.Api.Data;
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Crown> Crowns { get; set; }
     public DbSet<Candle> Candles { get; set; }
+    public DbSet<Connection> Connections { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-
-        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<CordialDto>().HasNoKey();
+        modelBuilder.Entity<CordialDto>().HasNoKey().ToTable(tb => tb.ExcludeFromMigrations());
 
         modelBuilder.Entity<Candle>(e =>
         {
@@ -60,6 +59,23 @@ namespace AmityApp.Api.Data;
             .WithMany()
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Chime>()
+            .HasOne(c => c.Cordial)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Connection>(e =>
+        {
+            e.HasOne(c => c.RequesterUser)
+                .WithMany()
+                .HasForeignKey(c => c.RequesterUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(c => c.AccepterUser)
+                .WithMany()
+                .HasForeignKey(c => c.AccepterUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 
 }

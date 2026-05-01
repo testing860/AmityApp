@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AmityApp.Pages.CropPhotoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:imageEditor="clr-namespace:Syncfusion.Maui.ImageEditor;assembly=Syncfusion.Maui.ImageEditor"
+    Padding="15"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*, Auto">
+        <!-- Image Editor -->
+        <imageEditor:SfImageEditor
+            x:Name="imageEditor"
+            Grid.Row="0"
+            ShowToolbar="False" />
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="Auto, *, Auto"
+            Margin="0,16,0,8">
+            <Border
+                Grid.Column="0"
+                StrokeShape="RoundRectangle 22"
+                Stroke="{StaticResource Primary}"
+                Padding="15,5"
+                HeightRequest="48"
+                MinimumWidthRequest="100"
+                VerticalOptions="Center">
+                <Label
+                    Text="Cancel"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Cancel_Click" />
+                </Border.GestureRecognizers>
+            </Border>
+            <Button
+                Grid.Column="2"
+                Style="{StaticResource rounded}"
+                Text="Accept"
+                Padding="30,0"
+                FontAttributes="Bold"
+                Clicked="AcceptChanges_Click" />
+        </Grid>
+    </Grid>
+</ContentPage>

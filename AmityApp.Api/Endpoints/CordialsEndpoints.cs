@@ -21,10 +21,10 @@ public static class CordialsEndpoints
 
             dto.Photo = photo;
 
-            return Results.Ok(await cordialService.SaveCordialAsync(dto, principal.GetUserId()));
+            return Results.Ok(await cordialService.SaveCordialAsync(dto, principal.GetUser()));
         })
         .DisableAntiforgery()
-        .Produces<ApiResult>()
+        .Produces<ApiResult<CordialDto>>()
         .WithName("SaveCordial");
 
         cordialsGroup.MapGet("/", async (int startIndex, int pageSize, CordialService cordialService, ClaimsPrincipal principal) =>
@@ -45,7 +45,7 @@ public static class CordialsEndpoints
 
         cordialsGroup.MapPost("/{cordialId:guid}/toggle-candle",
             async (Guid cordialId, CordialService cordialService, ClaimsPrincipal principal) =>
-            Results.Ok(await cordialService.ToggleCandleAsync(cordialId, principal.GetUserId())))
+            Results.Ok(await cordialService.ToggleCandleAsync(cordialId, principal.GetUser())))
             .Produces<ApiResult>()
             .WithName("ToggleCandle");
 
@@ -59,6 +59,16 @@ public static class CordialsEndpoints
             Results.Ok(await cordialService.DeleteCordialAsync(cordialId, principal.GetUserId())))
             .Produces<ApiResult>()
             .WithName("DeleteCordial");
+
+        cordialsGroup.MapGet("/{cordialId:guid}", async (Guid cordialId, CordialService cordialService, ClaimsPrincipal principal) =>
+            Results.Ok(await cordialService.GetCordialAsync(cordialId, principal.GetUserId())))
+            .Produces<CordialDto>()
+            .WithName("GetCordialById");
+
+        cordialsGroup.MapGet("/connections-only", async (int startIndex, int pageSize, CordialService cordialService, ClaimsPrincipal principal) =>
+            Results.Ok(await cordialService.GetOnlyConnectionCordialsAsync(startIndex, pageSize, principal.GetUserId())))
+            .Produces<CordialDto[]>()
+            .WithName("GetOnlyConnectionCordials");
 
         return app;
     }

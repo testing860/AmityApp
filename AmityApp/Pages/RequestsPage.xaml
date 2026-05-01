@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             xmlns:dtos="clr-namespace:AmityApp.Shared.Dtos;assembly=AmityApp.Shared"
+             xmlns:controls="clr-namespace:AmityApp.Controls"
+             x:Class="AmityApp.Pages.RequestsPage"
+             x:DataType="vm:RequestsViewModel"
+             x:Name="requestsPage"
+             xmlns:converters="clr-namespace:AmityApp.Converters"
+             Title="My Connections"
+             BackgroundColor="{StaticResource Background}">
+    <ContentPage.Resources>
+        <converters:EmulatorImageConverter x:Key="EmulatorImageConverter" />
+        <converters:IntToBoolInverseConverter x:Key="IntToBoolInverseConverter" />
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- SEARCH -->
+            <BoxView Style="{StaticResource fadedLine}" />
+
+            <Label Text="Find someone By E-Mail"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   TextColor="{StaticResource Primary}" />
+
+            <Border StrokeShape="RoundRectangle 22" Stroke="{StaticResource Primary}"
+                    BackgroundColor="{StaticResource Surface}" HeightRequest="44"
+                    Padding="0">
+                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="0">
+                    <controls:NoBorderEntry Placeholder="Email address"
+                                Text="{Binding SearchEmail}"
+                                Keyboard="Email"
+                                VerticalOptions="Center"
+                                Margin="12,0,0,0" />
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource Primary}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 0, 22, 22, 0"
+                            VerticalOptions="Fill"
+                            Padding="8,0,12,0">
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center" HorizontalOptions="Center">
+                            <controls:WhiteIcon Source="search.svg" HeightRequest="28" WidthRequest="28" />
+                            <Label Text="Search.." FontSize="14" VerticalOptions="Center" TextColor="White" />
+                        </HorizontalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SearchUserCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Search result -->
+            <Border Padding="15"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    IsVisible="{Binding SearchedUser, Converter={StaticResource IsNotNullConverter}}">
+                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="{Binding SearchedUser.Name}" FontAttributes="Bold" />
+                        <Label Text="{Binding SearchedUser.Email}" FontSize="12" TextColor="Gray" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource Primary}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 22"
+                            Padding="8,0,12,0"
+                            VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center" HorizontalOptions="Center">
+                            <controls:WhiteIcon Source="connect.svg" HeightRequest="28" WidthRequest="28" />
+                            <Label Text="Connect Now" FontSize="14" VerticalOptions="Center" TextColor="White" />
+                        </HorizontalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SendRequestToSearchedUserCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- PENDING -->
+            <BoxView Style="{StaticResource fadedLine}" />
+
+            <Label Text="Pending Requests"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   TextColor="{StaticResource Primary}" />
+
+            <!-- Empty State for Pending -->
+            <Label Text="No pending requests"
+                   HorizontalOptions="Center"
+                   TextColor="Gray"
+                   IsVisible="{Binding PendingRequests.Count, Converter={StaticResource IntToBoolInverseConverter}}" />
+
+            <!-- Pending Requests List -->
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding PendingRequests}" Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="dtos:ConnectionDto">
+                        <Border Padding="12" BackgroundColor="White">
+                            <Grid ColumnDefinitions="40, *, Auto, Auto" ColumnSpacing="10">
+                                <!-- Circular avatar -->
+                                <Border Grid.Column="0" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                                        BackgroundColor="{StaticResource Surface}" WidthRequest="40">
+                                    <Image Source="{Binding RequesterPhotoUrl, Converter={StaticResource EmulatorImageConverter}}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="40" WidthRequest="40"
+                                           VerticalOptions="Center" HorizontalOptions="Center">
+                                        <Image.Clip>
+                                            <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
+                                        </Image.Clip>
+                                    </Image>
+                                </Border>
+
+                                <!-- Name & Date -->
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding RequesterName}" FontAttributes="Bold" />
+                                    <Label Text="{Binding RequestedAt, StringFormat='Requested {0:dd MMM yyyy}'}"
+                                           FontSize="12" TextColor="Gray" />
+                                </VerticalStackLayout>
+
+                                <!-- Accept Button -->
+                                <Image Grid.Column="2" Source="accept.png" HeightRequest="20">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference requestsPage}, Path=BindingContext.AcceptRequestCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Image.GestureRecognizers>
+                                </Image>
+
+                                <!-- Decline Button -->
+                                <Image Grid.Column="3" Source="decline.png" HeightRequest="20">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference requestsPage}, Path=BindingContext.RejectRequestCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Image.GestureRecognizers>
+                                </Image>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <!-- CONNECTIONS -->
+            <BoxView Style="{StaticResource fadedLine}" />
+
+            <Label Text="Your Connections"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   TextColor="{StaticResource Primary}" />
+
+            <!-- Empty State for Connections -->
+            <Label Text="No connections yet"
+                   HorizontalOptions="Center"
+                   TextColor="Gray"
+                   IsVisible="{Binding AcceptedConnections.Count, Converter={StaticResource IntToBoolInverseConverter}}" />
+
+            <!-- Connections List -->
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding AcceptedConnections}" Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="dtos:ConnectionDto">
+                        <Border Padding="12" BackgroundColor="White">
+                            <Grid ColumnDefinitions="40, *, Auto" ColumnSpacing="10">
+                                <!-- Circular Avatat -->
+                                <Border Grid.Column="0" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                                        BackgroundColor="{StaticResource Surface}" WidthRequest="40">
+                                    <Image Source="{Binding RequesterPhotoUrl, Converter={StaticResource EmulatorImageConverter}}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="40" WidthRequest="40"
+                                           VerticalOptions="Center" HorizontalOptions="Center">
+                                        <Image.Clip>
+                                            <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
+                                        </Image.Clip>
+                                    </Image>
+                                </Border>
+
+                                <!-- Name -->
+                                <Label Grid.Column="1" Text="{Binding RequesterName}"
+                                       FontAttributes="Bold" VerticalOptions="Center" />
+
+                                <!-- Remove Button -->
+                                <Image Grid.Column="2" Source="decline.png" HeightRequest="20">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference requestsPage}, Path=BindingContext.DeleteConnectionCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Image.GestureRecognizers>
+                                </Image>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

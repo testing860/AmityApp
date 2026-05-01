@@ -1,3 +1,3 @@
 ﻿namespace AmityApp.Shared.Dtos;
 
-public class ChimeDto(Guid ForUserId, string Text, DateTime When, Guid? CordiaLid);
+public record ChimeDto(Guid ForUserId, string Text, DateTime When, Guid? CordialId, Guid? FromUserId, string? UserPhotoUrl);

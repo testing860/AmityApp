@@ -1,23 +1,32 @@
+using AmityApp.Services;
+using AmityApp.ViewModels;
+
 namespace AmityApp.Pages;
 
 public partial class NotificationsPage : ContentPage
 {
-    public NotificationsPage()
+    private readonly ChimesViewModel _chimesViewModel;
+    private readonly UpdatesService _updatesService;
+
+    public NotificationsPage(ChimesViewModel chimesViewModel, UpdatesService updatesService)
     {
         InitializeComponent();
-
-        List<NotificationsModel> notifications = [
-        new NotificationsModel(DateTime.Now, "This person lit your cordial"),
-        new NotificationsModel(DateTime.Now.AddDays(-1), "This person commented on your cordial"),
-        new NotificationsModel(DateTime.Now, "This person lit your cordial"),
-        new NotificationsModel(DateTime.Now.AddMinutes(200), "This person lit your cordial"),
-        new NotificationsModel(DateTime.Now.AddMonths(-5), "This person commented on your cordial"),
-        new NotificationsModel(DateTime.Now, "This person wants to connect with you"),
-        new NotificationsModel(DateTime.Now, "This person lit your cordial"),
-        new NotificationsModel(DateTime.Now, "This person lit your cordial"),
-        ];
-
-        collection.ItemsSource = notifications;
+        _chimesViewModel = chimesViewModel;
+        _updatesService = updatesService;
+        BindingContext = chimesViewModel;
     }
-    public record NotificationsModel(DateTime On, string Text);
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _chimesViewModel.ConfigureUpdates();
+        if (_chimesViewModel.Chimes.Count == 0)
+            _chimesViewModel.FetchChimesCommand.Execute(null);
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _updatesService.RemoveHandlers(nameof(ChimesViewModel));
+    }
 }

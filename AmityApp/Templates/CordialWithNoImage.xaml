@@ -13,17 +13,21 @@
         <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="6">
             <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
                 <Border Grid.Column="0"
-                        HeightRequest="40"
-                        StrokeShape="RoundRectangle 20"
-                        BackgroundColor="{StaticResource Surface}"
-                        WidthRequest="40">
+                    HeightRequest="40"
+                    StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{StaticResource Surface}"
+                    WidthRequest="40">
                     <Image 
                         Source="{Binding FullUserPhotoUrl}"
-                        Aspect="AspectFit"
-                        HeightRequest="30"
-                        WidthRequest="30"
+                        Aspect="AspectFill"
+                        HeightRequest="40"
+                        WidthRequest="40"
                         VerticalOptions="Center"
-                        HorizontalOptions="Center"/>
+                        HorizontalOptions="Center">
+                        <Image.Clip>
+                            <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
+                        </Image.Clip>
+                    </Image>
                 </Border>
                 <Grid
                     Grid.Column="1"
@@ -39,7 +43,6 @@
                         FontAttributes="Bold"
                         Text="·" 
                         FontSize="14"
-                        Margin="0, -7, 0, 0"
                         VerticalOptions="Center"/>
                     <Label
                         Grid.Column="2"
@@ -47,6 +50,15 @@
                         Text="{Binding PostedOnDisplay, Converter={StaticResource RelativeTimeConverter}}"
                         VerticalOptions="Center"/>
                 </Grid>
+                <!-- Vibe (right‑aligned) -->
+                <HorizontalStackLayout Grid.Column="2" HorizontalOptions="End"
+                           VerticalOptions="Center" Spacing="4"
+                           IsVisible="{Binding HasVibe}">
+                    <Image Source="{Binding VibeIcon}" HeightRequest="24" WidthRequest="24"
+               VerticalOptions="Center" />
+                    <Label Text="{Binding VibeDisplay}" FontSize="13" VerticalOptions="Center"
+               TextColor="{StaticResource Primary}" FontAttributes="Italic" />
+                </HorizontalStackLayout>
             </Grid>
 
             <Label
@@ -115,6 +127,9 @@
                             FontSize="12"
                             Text="Share"
                             VerticalOptions="Center" />
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:BaseCordialViewModel}}, Path=ShareCordialCommand}" CommandParameter="{Binding .}"/>
+                        </HorizontalStackLayout.GestureRecognizers>
                     </HorizontalStackLayout>
                 </FlexLayout>
             </VerticalStackLayout>

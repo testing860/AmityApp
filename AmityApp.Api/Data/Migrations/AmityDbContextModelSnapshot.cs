@@ -43,10 +43,13 @@ namespace AmityApp.Api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CordialId")
+                    b.Property<Guid?>("CordialId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ForUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FromUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -62,6 +65,8 @@ namespace AmityApp.Api.Data.Migrations
                     b.HasIndex("CordialId");
 
                     b.HasIndex("ForUserId");
+
+                    b.HasIndex("FromUserId");
 
                     b.ToTable("Chimes");
                 });
@@ -97,6 +102,37 @@ namespace AmityApp.Api.Data.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("AmityApp.Api.Data.Entities.Connection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccepterUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RequesterUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccepterUserId");
+
+                    b.HasIndex("RequesterUserId");
+
+                    b.ToTable("Connections");
+                });
+
             modelBuilder.Entity("AmityApp.Api.Data.Entities.Cordial", b =>
                 {
                     b.Property<Guid>("Id")
@@ -123,6 +159,13 @@ namespace AmityApp.Api.Data.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Vibe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Visibility")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -213,7 +256,16 @@ namespace AmityApp.Api.Data.Migrations
                     b.Property<string>("UserPhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("CordialDto");
+                    b.Property<string>("Vibe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Visibility")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("CordialDto", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("AmityApp.Api.Data.Entities.Candle", b =>
@@ -240,8 +292,7 @@ namespace AmityApp.Api.Data.Migrations
                     b.HasOne("AmityApp.Api.Data.Entities.Cordial", "Cordial")
                         .WithMany()
                         .HasForeignKey("CordialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AmityApp.Api.Data.Entities.User", "User")
                         .WithMany()
@@ -249,7 +300,13 @@ namespace AmityApp.Api.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("AmityApp.Api.Data.Entities.User", "FromUser")
+                        .WithMany()
+                        .HasForeignKey("FromUserId");
+
                     b.Navigation("Cordial");
+
+                    b.Navigation("FromUser");
 
                     b.Navigation("User");
                 });
@@ -271,6 +328,25 @@ namespace AmityApp.Api.Data.Migrations
                     b.Navigation("Cordial");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AmityApp.Api.Data.Entities.Connection", b =>
+                {
+                    b.HasOne("AmityApp.Api.Data.Entities.User", "AccepterUser")
+                        .WithMany()
+                        .HasForeignKey("AccepterUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AmityApp.Api.Data.Entities.User", "RequesterUser")
+                        .WithMany()
+                        .HasForeignKey("RequesterUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AccepterUser");
+
+                    b.Navigation("RequesterUser");
                 });
 
             modelBuilder.Entity("AmityApp.Api.Data.Entities.Cordial", b =>

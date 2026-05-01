@@ -53,6 +53,7 @@
                                                        ImageOnly="{StaticResource cordialWithImageOnlyTemplate}"/>
 
                     <converters:RelativeTimeConverter x:Key="RelativeTimeConverter" />
+                    <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
 
                 </ResourceDictionary>
 

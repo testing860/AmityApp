@@ -2,90 +2,134 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AmityApp.Pages.AddCordialPage"
-            xmlns:controls="clr-namespace:AmityApp.Controls"
+             xmlns:controls="clr-namespace:AmityApp.Controls"
              xmlns:vm="clr-namespace:AmityApp.ViewModels"
-             Title="Create Cordial"
+             Title="{Binding PageTitle}"
              Padding="15"
              x:DataType="vm:SaveCordialViewModel">
 
-    <ScrollView>
-        <Grid RowDefinitions="Auto, *, Auto, Auto" RowSpacing="5">
-            <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
-                <Border Grid.Column="0"
-                                HeightRequest="40"
-                                StrokeShape="RoundRectangle 20"
-                                BackgroundColor="{StaticResource Surface}"
-                                WidthRequest="40">
-                    <Image 
-                                     Source="user.png"
-                                     Aspect="AspectFit"
-                                     HeightRequest="30"
-                                     WidthRequest="30"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center"/>
-                </Border>
-                <Label
-                     Grid.Column="1"
-                    FontAttributes="Bold"
-                    Text="Jim Placeholder" 
-                    VerticalOptions="Center"/>
-            </Grid>
+    <Grid>
+        <ScrollView>
+            <Grid RowDefinitions="Auto, Auto, *, Auto, Auto" RowSpacing="5">
+                <!-- Row 0: Avatar + name / Vibe button -->
+                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                    <!-- Left: avatar + name -->
+                    <Grid ColumnDefinitions="40, Auto" ColumnSpacing="6" VerticalOptions="Center">
+                        <Border Grid.Column="0" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                                BackgroundColor="{StaticResource Surface}" WidthRequest="40">
+                            <Image Source="{Binding UserPhotoDisplayUrl}" Aspect="AspectFill"
+                                   HeightRequest="40" WidthRequest="40"
+                                   VerticalOptions="Center" HorizontalOptions="Center">
+                                <Image.Clip>
+                                    <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
+                                </Image.Clip>
+                            </Image>
+                        </Border>
+                        <Label Grid.Column="1" FontAttributes="Bold"
+                               Text="{Binding UserName}" VerticalOptions="Center"/>
+                    </Grid>
 
-            <controls:NoBorderEditor Grid.Row="1" 
-                                     BackgroundColor="{StaticResource Surface}" 
-                                     Placeholder="Start typing.."
-                                     Text="{Binding Content}" />
+                    <!-- Right: Pick a Vibe button -->
+                    <Border Grid.Column="1"
+                            StrokeShape="RoundRectangle 22" Stroke="#FFD700"
+                            BackgroundColor="{StaticResource Secondary}" HeightRequest="36"
+                            Padding="10,4" HorizontalOptions="End" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="4">
+                            <Image Source="vibe.svg" HeightRequest="20" WidthRequest="20" VerticalOptions="Center" />
+                            <Label Text="Pick a Vibe" VerticalOptions="Center"
+                                   FontAttributes="Bold" TextColor="#FFD700" FontSize="13" />
+                        </HorizontalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectVibeCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
 
-            <Grid Grid.Row="2">
-                <Border StrokeThickness="3" Stroke="{StaticResource Primary}" BackgroundColor="Transparent" HeightRequest="250">
-                    <Image HeightRequest="250" Source="{Binding PhotoPath}"/>
-                </Border>
-                <Border StrokeShape="RoundRectangle 5" HeightRequest="40" WidthRequest="40"
-                        BackgroundColor="{StaticResource Primary}"
-                        VerticalOptions="Start"
-                        StrokeThickness="0"
-                        HorizontalOptions="End"
-                        Margin="7">
-                    <controls:WhiteIcon Source="trash.png" HeightRequest="27" WidthRequest="27" />
-                    <Border.Shadow>
-                        <Shadow />
-                    </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding RemovePhotoCommand}" />
-                    </Border.GestureRecognizers>
-                </Border>
-                <Grid.Triggers>
-                    <DataTrigger TargetType="Grid" Binding="{Binding PhotoPath}" Value="">
-                        <Setter Property="IsVisible" Value="False" />
-                    </DataTrigger>
-                </Grid.Triggers>
-            </Grid>
-
-            <FlexLayout Grid.Row="3" JustifyContent="SpaceBetween" Padding="0, 0, 0, 2">
-
-                <Border StrokeShape="RoundRectangle 22" Stroke="{StaticResource Primary}" Padding="15, 5">
-                    <HorizontalStackLayout Spacing="5">
-                        <controls:PrimaryColorImage Source="photo.png" HeightRequest="25" WidthRequest="25"/>
-                        <Label Text="Change Photo" VerticalOptions="Center" FontAttributes="Bold">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding PhotoPath}" Value="">
-                                    <Setter Property="Text" Value="Add Photo" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
+                <!-- Row 1: Visibility (left) / Current vibe (right) -->
+                <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center"
+                                           HorizontalOptions="Start">
+                        <Image Source="{Binding VisibilityIcon}" HeightRequest="16" WidthRequest="16" />
+                        <Label Text="{Binding VisibilityDisplay}" FontSize="12" VerticalOptions="Center"
+                               TextColor="{StaticResource SecondaryDarkText}" FontAttributes="Bold" />
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectVisibilityCommand}" />
+                        </HorizontalStackLayout.GestureRecognizers>
                     </HorizontalStackLayout>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SelectPhotoCommand}" />
-                    </Border.GestureRecognizers>
-                </Border>
 
-                <Button Style="{StaticResource rounded} " 
-                        Command="{Binding SaveCordialCommand}"
-                        Text="Publish" 
-                        Padding="30, 0" 
-                        FontAttributes="Bold" />
-                
-            </FlexLayout>
-        </Grid>
-    </ScrollView>
+                    <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center"
+                       HorizontalOptions="End">
+                        <Label Text="{Binding VibePrefix}" VerticalOptions="Center" FontSize="12"
+           TextColor="{StaticResource SecondaryDarkText}" />
+                        <Image Source="{Binding SelectedVibeIcon}" HeightRequest="16" WidthRequest="16"
+           VerticalOptions="Center" />
+                        <Label Text="{Binding VibeName}" VerticalOptions="Center" FontSize="12"
+           TextColor="{StaticResource SecondaryDarkText}" />
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectVibeCommand}" />
+                        </HorizontalStackLayout.GestureRecognizers>
+                    </HorizontalStackLayout>
+                </Grid>
+
+                <!-- Row 2: Editor -->
+                <controls:NoBorderEditor Grid.Row="2"
+                                         BackgroundColor="{StaticResource Surface}"
+                                         Placeholder="Start typing.."
+                                         Text="{Binding Content}" />
+
+                <!-- Row 3: Photo Preview + Delete Button -->
+                <Grid Grid.Row="3">
+                    <Border StrokeThickness="3" Stroke="{StaticResource Primary}" BackgroundColor="Transparent" HeightRequest="250">
+                        <Image HeightRequest="250" Source="{Binding PhotoPath}"/>
+                    </Border>
+                    <Border StrokeShape="RoundRectangle 5" HeightRequest="40" WidthRequest="40"
+                            BackgroundColor="{StaticResource Primary}"
+                            VerticalOptions="Start"
+                            StrokeThickness="0"
+                            HorizontalOptions="End"
+                            Margin="7">
+                        <controls:WhiteIcon Source="trash.png" HeightRequest="27" WidthRequest="27" />
+                        <Border.Shadow>
+                            <Shadow />
+                        </Border.Shadow>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding RemovePhotoCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid" Binding="{Binding PhotoPath}" Value="">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Grid.Triggers>
+                </Grid>
+
+                <!-- Row 4: Action buttons -->
+                <FlexLayout Grid.Row="4" JustifyContent="SpaceBetween" Padding="0, 0, 0, 2">
+                    <Border StrokeShape="RoundRectangle 22" Stroke="{StaticResource Primary}" Padding="15, 5">
+                        <HorizontalStackLayout Spacing="5">
+                            <controls:PrimaryColorImage Source="photo.png" HeightRequest="25" WidthRequest="25"/>
+                            <Label Text="Change Photo" VerticalOptions="Center" FontAttributes="Bold">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding PhotoPath}" Value="">
+                                        <Setter Property="Text" Value="Add Photo" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </HorizontalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectPhotoCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Button Style="{StaticResource rounded}"
+                            Command="{Binding SaveCordialCommand}"
+                            Text="Publish"
+                            Padding="30, 0"
+                            FontAttributes="Bold" />
+                </FlexLayout>
+            </Grid>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           VerticalOptions="Center" />
+    </Grid>
 </ContentPage>

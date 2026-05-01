@@ -2,11 +2,13 @@
 using AmityApp.Handlers;
 using AmityApp.Pages;
 using AmityApp.Services;
+using AmityApp.Shared;
 using AmityApp.ViewModels;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
 using Microsoft.Extensions.Logging;
 using Refit;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace AmityApp
 {
@@ -24,11 +26,14 @@ namespace AmityApp
                     fonts.AddFont("PlusJakartaSans-Regular.ttf", "PlusJakartaSansRegular");
                     fonts.AddFont("PlusJakartaSans-Bold.ttf", "PlusJakartaSansBold");
                 })
-                .UseMauiCommunityToolkit();
+                .UseMauiCommunityToolkit()
+                .ConfigureSyncfusionCore();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<AuthService>();
+            builder.Services.AddSingleton<UpdatesService>();
+
             builder.Services.AddSingleton<RegisterViewModel>()
                 .AddTransient<RegisterPage>();
             builder.Services.AddSingleton<LoginViewModel>()
@@ -36,10 +41,16 @@ namespace AmityApp
             builder.Services.AddSingleton<SaveCordialViewModel>()
                 .AddTransient<AddCordialPage>();
             builder.Services.AddTransient<AuthHandler>();
-            builder.Services.AddSingleton<HomeViewModel>()
-                .AddSingleton<HomePage>();
+            builder.Services.AddTransient<HomeViewModel>()
+                .AddTransient<HomePage>();
             builder.Services.AddTransient<DetailsViewModel>()
                 .AddTransient<CordialDetailsPage>();
+            builder.Services.AddTransient<ProfileViewModel>()
+                .AddTransient<ProfilePage>();
+            builder.Services.AddTransient<ChimesViewModel>()
+                 .AddTransient<NotificationsPage>();
+            builder.Services.AddTransient<RequestsViewModel>()
+                 .AddTransient<RequestsPage>();
 
             ConfigureRefit(builder.Services);
 
@@ -53,27 +64,47 @@ namespace AmityApp
 
         private static void ConfigureRefit(IServiceCollection services)
         {
-            var baseApiUrl = "https://10.0.2.2:7134";
-            var handler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-            };
-
             services.AddRefitClient<IAuthApi>()
                     .ConfigureHttpClient(SetHttpClient)
-                    .ConfigurePrimaryHttpMessageHandler(() => handler);
+                    .ConfigurePrimaryHttpMessageHandler(() =>
+                        new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                        });
 
             services.AddRefitClient<ICordialsApi>(GetRefitSettings)
                     .ConfigureHttpClient(SetHttpClient)
                     .AddHttpMessageHandler<AuthHandler>()
-                    .ConfigurePrimaryHttpMessageHandler(() => handler);
+                    .ConfigurePrimaryHttpMessageHandler(() =>
+                        new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                        });
+
+            services.AddRefitClient<IConnectionsApi>(GetRefitSettings)
+                    .ConfigureHttpClient(SetHttpClient)
+                    .AddHttpMessageHandler<AuthHandler>()
+                    .ConfigurePrimaryHttpMessageHandler(() =>
+                        new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                        });
 
             services.AddRefitClient<IUserApi>(GetRefitSettings)
                     .ConfigureHttpClient(SetHttpClient)
                     .AddHttpMessageHandler<AuthHandler>()
-                    .ConfigurePrimaryHttpMessageHandler(() => handler);
+                    .ConfigurePrimaryHttpMessageHandler(() =>
+                        new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                        });
 
-            void SetHttpClient(HttpClient httpClient) => httpClient.BaseAddress = new Uri(baseApiUrl);
+            void SetHttpClient(HttpClient httpClient)
+            {
+                httpClient.BaseAddress = new Uri(AppConstants.ApiBaseUrl);
+                httpClient.DefaultRequestHeaders.CacheControl =
+                    new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
+            }
 
             RefitSettings GetRefitSettings(IServiceProvider sp)
             {

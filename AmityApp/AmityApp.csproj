@@ -52,15 +52,32 @@
 
 	<ItemGroup>
 	  <None Remove="Platforms\Android\Resources\xml\network_security_config.xml" />
+	  <None Remove="Resources\Images\vibes\apology.svg" />
+	  <None Remove="Resources\Images\vibes\appreciation.svg" />
+	  <None Remove="Resources\Images\vibes\gratitude.svg" />
+	  <None Remove="Resources\Images\vibes\love.svg" />
+	  <None Remove="Resources\Images\vibes\mindfulness.svg" />
+	  <None Remove="Resources\Images\vibes\thankyou.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\vibes\apology.svg" />
+	  <MauiImage Include="Resources\Images\vibes\appreciation.svg" />
+	  <MauiImage Include="Resources\Images\vibes\gratitude.svg" />
+	  <MauiImage Include="Resources\Images\vibes\love.svg" />
+	  <MauiImage Include="Resources\Images\vibes\mindfulness.svg" />
+	  <MauiImage Include="Resources\Images\vibes\thankyou.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.15" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.111" />
 		<PackageReference Include="Refit.HttpClientFactory" Version="9.0.2" />
+		<PackageReference Include="Syncfusion.Maui.ImageEditor" Version="30.2.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -70,6 +87,9 @@
 	<ItemGroup>
 	  <Compile Update="Pages\HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\RequestsPage.xaml.cs">
+	    <DependentUpon>RequestsPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Pages\OnBoardingPage.xaml.cs">
 	    <DependentUpon>OnBoardingPage.xaml</DependentUpon>
@@ -83,7 +103,13 @@
 	  <MauiXaml Update="Pages\CordialDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\CropPhotoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\RequestsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\NotificationsPage.xaml">

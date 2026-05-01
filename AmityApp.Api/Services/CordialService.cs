@@ -1,8 +1,11 @@
 ﻿using AmityApp.Api.Data;
 using AmityApp.Api.Data.Entities;
+using AmityApp.Api.Hubs;
 using AmityApp.Shared.Dtos;
+using AmityApp.Shared.Hubs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -11,66 +14,59 @@ namespace AmityApp.Api.Services;
     {
     private readonly AmityDbContext _context;
     private readonly PhotoUploadService _photoUploadService;
+    private readonly IHubContext<NotificationsHub, INotificationsHubClient> _hubContext;
+    private readonly ConnectionService _connectionService;
 
-    public CordialService(AmityDbContext context, PhotoUploadService photoUploadService)
+    public CordialService(AmityDbContext context, PhotoUploadService photoUploadService, 
+        IHubContext<NotificationsHub, INotificationsHubClient> hubContext, ConnectionService connectionService)
 
     {
         _context = context;
         _photoUploadService = photoUploadService;
+        _hubContext = hubContext;
+        _connectionService = connectionService;
     }
 
-    public async Task<ApiResult> SaveCordialAsync(SaveCordialDto dto, Guid userId)
+    public async Task<ApiResult<CordialDto>> SaveCordialAsync(SaveCordialDto dto, LoggedInUser user)
     {
         string? _existingPhotoPath = null;
+        Cordial? cordial = null;
+        bool sendChime = false;
         if (dto.CordialId == default)
         {
-            // New Cordial
-            var cordial = new Cordial
+            cordial = new Cordial
             {
                 Content = dto.Content,
                 PostedOn = DateTime.Now,
-                UserId = userId
+                UserId = user.Id,
+                Vibe = dto.Vibe,
+                Visibility = dto.Visibility ?? "Public"
             };
-            // Save the Image (if provided)
             if (dto.Photo is not null)
             {
-                (cordial.PhotoPath, cordial.PhotoUrl) = await _photoUploadService.SavePhotoAsync (dto.Photo, "uploads", "images", "users", userId.ToString(), "cordials");
+                (cordial.PhotoPath, cordial.PhotoUrl) = await _photoUploadService.SavePhotoAsync (dto.Photo, "uploads", "images", "users", user.Id.ToString(), "cordials");
             }
             _context.Cordials.Add(cordial);
         }
         else
         {
-            // Existing Cordial
-            var cordial = await _context.Cordials.FindAsync(dto.CordialId);
+            cordial = await _context.Cordials.FindAsync(dto.CordialId);
             if (cordial is null)
-                return ApiResult.Failure("Ouch! Cordial does not exist");
+                return ApiResult<CordialDto>.Failure("Ouch! Cordial does not exist");
 
-            if (cordial.UserId != userId)
-                return ApiResult.Failure("You can only edit your own cordial");
+            if (cordial.UserId != user.Id)
+                return ApiResult<CordialDto>.Failure("You can only edit your own cordial");
 
             cordial.Content = dto.Content;
-            cordial.EditedOn = DateTime.UtcNow;
-
-
-            // Photo 
-            // 1. No CHange in Photo
-            // 2. User changed Photo (Remove existing photo and upload/save new photo)
-            // 3. User added Photo (previously no Photo in the Cordial - only text)
-            // 4. User removed the Photo
+            cordial.Vibe = dto.Vibe;
+            cordial.Visibility = dto.Visibility ?? "Public";
+            cordial.EditedOn = DateTime.Now;
 
             if (dto.Photo is not null)
             {
              _existingPhotoPath = cordial.PhotoPath;
 
-                // User has selected a photo
-                // Case 2 - User changing photo
-                // Case 3 - User is adding a new photo
-
-                 // Upload Photo
-                // Update Database
-                 // Remove existing photo (only for case 2)
-
-             (cordial.PhotoPath, cordial.PhotoUrl) = await _photoUploadService.SavePhotoAsync(dto.Photo, "uploads", "images", "users", userId.ToString(), "cordials");
+             (cordial.PhotoPath, cordial.PhotoUrl) = await _photoUploadService.SavePhotoAsync(dto.Photo, "uploads", "images", "users", user.Id.ToString(), "cordials");
 
 
             }
@@ -78,29 +74,46 @@ namespace AmityApp.Api.Services;
             {
                 if(dto.ExistingPhotoRemoved)
                 {
-                    // Case 4
-                    // Remove existing photo from path
-                    // Update db
                     _existingPhotoPath = cordial.PhotoPath;
                     cordial.PhotoPath = null;
                     cordial.PhotoUrl = null;
                 }
             }
             _context.Cordials.Update(cordial);
+            sendChime = true;
         }
         try
         {
             await _context.SaveChangesAsync();
+
             if (!string.IsNullOrWhiteSpace(_existingPhotoPath) && File.Exists(_existingPhotoPath))
             {
                 File.Delete(_existingPhotoPath);
             }
+            var cordialDto = new CordialDto
+            {
+                Content = cordial.Content,
+                Vibe = cordial.Vibe,
+                Visibility = cordial.Visibility,
+                EditedOn = cordial.EditedOn,
+                PhotoUrl = cordial.PhotoUrl,
+                CordialId = cordial.Id,
+                UserId = cordial.UserId,
+                UserName = user.Name,
+                UserPhotoUrl = user.PhotoUrl,
+                PostedOn = cordial.PostedOn
+            };
 
-            return ApiResult.Success();
+            if (sendChime)
+            {
+                await _hubContext.Clients.All.CordialChanged(cordialDto);
+            }
+
+            return ApiResult<CordialDto>.Success(cordialDto);
         }
         catch (Exception ex)
         {
-            return ApiResult.Failure(ex.Message);
+            return ApiResult<CordialDto>.Failure(ex.Message);
         }
     }
 
@@ -113,10 +126,28 @@ namespace AmityApp.Api.Services;
         return cordials;
     }
 
+    public async Task<CordialDto?> GetCordialAsync(Guid cordialId, Guid currentUserId)
+    {
+        var cordials = await _context.Set<CordialDto>()
+        .FromSqlInterpolated($"EXEC GetCordialById @CordialId={cordialId}, @CurrentUserId = {currentUserId}")
+        .ToArrayAsync();
+
+        if (cordials.Length == 0)
+            return null;
+        return cordials[0];
+    }
+
     public async Task<ApiResult<CommentDto>> SaveCommentAsync(SaveCommentDto dto, LoggedInUser currentUser)
     {
+        var cordialOwnerId = await _context.Cordials.Where(c => c.Id == dto.CordialId)
+                                            .Select(c => c.UserId).FirstOrDefaultAsync();
+        if (cordialOwnerId == default)
+            return ApiResult<CommentDto>.Failure("Cordial not found");
 
         Comment? comment = null;
+        bool sendChime = false;
+
+
         if (dto.CommentId == Guid.Empty)
         {
             // New Comment
@@ -128,6 +159,7 @@ namespace AmityApp.Api.Services;
                 CommentedOn = DateTime.Now
             };
             _context.Comments.Add(comment);
+            sendChime = true;
         }
         else
         {
@@ -156,6 +188,16 @@ namespace AmityApp.Api.Services;
                 UserName = currentUser.Name,
                 UserPhotoUrl = currentUser.PhotoUrl,
             };
+
+            if (sendChime)
+            {
+                var chimeDto = new ChimeDto(cordialOwnerId, $"{currentUser.Name} commented on your cordial!",
+                    DateTime.Now, dto.CordialId, currentUser.Id, currentUser.PhotoUrl);
+                await _connectionService.SaveChimeAsync(chimeDto);
+                await _hubContext.Clients.All.CommentAddedToCordial(commentDto);
+                await _hubContext.Clients.All.ChimeGenerated(chimeDto);
+            }
+
             return ApiResult<CommentDto>.Success(commentDto);
         }
         catch (Exception ex)
@@ -183,23 +225,26 @@ namespace AmityApp.Api.Services;
     })
     .ToArrayAsync();
 
-    public async Task<ApiResult> ToggleCandleAsync(Guid cordialId, Guid currentUserId)
+    public async Task<ApiResult> ToggleCandleAsync(Guid cordialId, LoggedInUser currentUser)
     {
-        var cordialExists = await _context.Cordials.AnyAsync(c => c.Id == cordialId);
-        if (!cordialExists)
+        var cordialOwnerId = await _context.Cordials.Where(c => c.Id == cordialId)
+                                                    .Select(c => c.UserId).FirstOrDefaultAsync();
+        if (cordialOwnerId == default)
             return ApiResult.Failure("Cordial not found");
 
         try
         {
-            var candle = await _context.Candles.FirstOrDefaultAsync(c => c.CordialId == cordialId && c.UserId == currentUserId);
+            bool sendChime = false;
+            var candle = await _context.Candles.FirstOrDefaultAsync(c => c.CordialId == cordialId && c.UserId == currentUser.Id);
             if (candle is null)
             {
                 candle = new Candle
                 {
                     CordialId = cordialId,
-                    UserId = currentUserId
+                    UserId = currentUser.Id
                 };
                 _context.Candles.Add(candle);
+                sendChime = true;
             }
             else
             {
@@ -207,6 +252,14 @@ namespace AmityApp.Api.Services;
             }
 
             await _context.SaveChangesAsync();
+
+            if(sendChime)
+            {
+                var chimeDto = new ChimeDto(cordialOwnerId, $"{currentUser.Name} has lit a candle on your cordial",
+                    DateTime.Now, cordialId, currentUser.Id, currentUser.PhotoUrl);
+                await _connectionService.SaveChimeAsync(chimeDto);
+                await _hubContext.Clients.All.ChimeGenerated(chimeDto);
+            }
             return ApiResult.Success();
         }
         catch (Exception ex)
@@ -258,8 +311,12 @@ namespace AmityApp.Api.Services;
             if (cordial.UserId != currentUserId)
                 return ApiResult.Failure("You can delete your own cordials only");
 
-            _context.Cordials.Remove(cordial);
+            cordial.IsDeleted = true;
+            _context.Cordials.Update(cordial);
+
             await _context.SaveChangesAsync();
+                await _hubContext.Clients.All.CordialDeleted(cordialId);
+
             return ApiResult.Success();
         }
         catch (Exception ex)
@@ -267,5 +324,13 @@ namespace AmityApp.Api.Services;
             return ApiResult.Failure(ex.Message);
         }
     }
+
+    public async Task<CordialDto[]> GetOnlyConnectionCordialsAsync(int startIndex, int pageSize, Guid currentUserId)
+    {
+        return await _context.Set<CordialDto>()
+            .FromSqlInterpolated($"EXEC GetOnlyConnectionCordials @StartIndex={startIndex}, @PageSize={pageSize}, @CurrentUserId={currentUserId}")
+            .ToArrayAsync();
+    }
+
 
 }

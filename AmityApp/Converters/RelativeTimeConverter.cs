@@ -44,7 +44,7 @@ public class RelativeTimeConverter : IValueConverter
         }
 
         // Older than a week: show actual date
-        return dateTime.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
+        return dateTime.ToString("dd MMM · HH:mm", CultureInfo.InvariantCulture);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

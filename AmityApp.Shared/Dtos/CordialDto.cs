@@ -11,6 +11,8 @@ public class CordialDto
     public string UserName { get; set; }
     public string? UserPhotoUrl { get; set; }
     public string? Content { get; set; }
+    public string? Vibe { get; set; }
+    public string? Visibility { get; set; }
     public string? PhotoUrl { get; set; }
 
     public DateTime PostedOn { get; set; }
@@ -32,12 +34,9 @@ public class CordialDto
                 return null;
 
             var url = PhotoUrl;
-
-            // Replace development HTTPS URLs with HTTP emulator URL
             url = url.Replace("https://localhost:7134", "http://10.0.2.2:5009")
                      .Replace("https://10.0.2.2:7134", "http://10.0.2.2:5009");
 
-            // If still a relative path, prepend base URL
             if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
                 !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {

@@ -1,5 +1,6 @@
 ﻿using AmityApp.Shared.Dtos;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,32 @@ public partial class CordialModel : ObservableObject
     public Guid CordialId { get; set; }
     public Guid UserId { get; set; }
     public string UserName { get; set; }
-    public string? UserPhotoUrl { get; set; }
-    public string? Content { get; set; }
-    public string? PhotoUrl { get; set; }
+
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(FullUserPhotoUrl), nameof(CordialTemplateContentViewName))]
+    private string? _userPhotoUrl;
+
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(FullPhotoUrl), nameof(CordialTemplateContentViewName))]
+    private string? _photoUrl;
+
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(CordialTemplateContentViewName))]
+    private string? _content;
+
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(HasVibe), nameof(VibeIcon), nameof(VibeDisplay))]
+    private string? _vibe;
+
+    public bool HasVibe => !string.IsNullOrEmpty(Vibe);
+
+    // Choose icon based on vibe value
+    public string? VibeIcon => _vibe switch
+    {
+        "love" => "vibes/love.svg",
+        "gratitude" => "vibes/gratitude.svg",
+        "apology" => "vibes/apology.svg",
+        "appreciation" => "vibes/appreciation.svg",
+        "mindfulness" => "vibes/mindfulness.svg",
+        "thank_you" => "vibes/thankyou.svg",
+        _ => null
+    };
 
     public DateTime PostedOnDisplay { get; set; }
 
@@ -104,6 +128,8 @@ public partial class CordialModel : ObservableObject
     {
         CordialId = dto.CordialId,
         Content = dto.Content,
+        Vibe = dto.Vibe,
+        Visibility = dto.Visibility,
         IsCrowned = dto.IsCrowned,
         IsLit = dto.IsLit,
         PhotoUrl = dto.PhotoUrl,
@@ -113,4 +139,32 @@ public partial class CordialModel : ObservableObject
         UserPhotoUrl = dto.UserPhotoUrl
     };
 
+    public void NotifyFullPhotoUrlChanged() => OnPropertyChanged(nameof(FullPhotoUrl));
+
+    public string? VibeDisplay
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Vibe))
+                return null;
+            var display = Vibe.Replace("_", " ");
+            if (display.Length > 0)
+                display = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(display.ToLowerInvariant());
+            return display;
+        }
+    }
+
+    [ObservableProperty]
+    private string? _visibility;
+
+    public void Refresh()
+    {
+        OnPropertyChanged(nameof(PhotoUrl));
+        OnPropertyChanged(nameof(Content));
+        OnPropertyChanged(nameof(PostedOnDisplay));
+        OnPropertyChanged(nameof(Vibe));
+        OnPropertyChanged(nameof(VibeIcon));
+        OnPropertyChanged(nameof(HasVibe));
+        OnPropertyChanged(nameof(FullPhotoUrl));
+    }
 }

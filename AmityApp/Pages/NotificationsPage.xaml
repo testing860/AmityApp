@@ -2,26 +2,54 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AmityApp.Pages.NotificationsPage"
-             Title="Your Notifications"
-            BackgroundColor="{StaticResource Background}">
+             Title="My Notifications"
+            BackgroundColor="{StaticResource Background}"
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             xmlns:dtos="clr-namespace:AmityApp.Shared.Dtos;assembly=AmityApp.Shared"
+             xmlns:converters="clr-namespace:AmityApp.Converters"
+             x:DataType="vm:ChimesViewModel">
+    <ContentPage.Resources>
+        <converters:RelativeTimeConverter x:Key="RelativeTimeConverter" />
+        <converters:EmulatorImageConverter x:Key="EmulatorImageConverter" />
+    </ContentPage.Resources>
 
-    <CollectionView x:Name="collection">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Border
-                Margin="0,5"
-                Padding="10"
-                BackgroundColor="White"
-                StrokeThickness="0">
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="{Binding On, StringFormat='{0:hh:mm tt dd MMM yyyy}'}" 
-                               FontSize="12"
-                               TextColor="{StaticResource Placeholder}"
-                                />
-                        <Label Text="{Binding Text}"/>
-                    </VerticalStackLayout>
-                </Border>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshChimesCommand}">
+        <Grid>
+            <CollectionView ItemsSource="{Binding Chimes}" RemainingItemsThreshold="10" RemainingItemsThresholdReachedCommand="{Binding FetchChimesCommand}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="dtos:ChimeDto">
+                        <Border Margin="0,5" Padding="10" BackgroundColor="White" StrokeThickness="0">
+                            <Grid ColumnDefinitions="40, *" ColumnSpacing="10">
+                                <!-- Circular Avatar -->
+                                <Border Grid.Column="0" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{StaticResource Surface}" WidthRequest="40">
+                                    <Image Source="{Binding UserPhotoUrl, Converter={StaticResource EmulatorImageConverter}}" Aspect="AspectFill"
+                       HeightRequest="40" WidthRequest="40"
+                       VerticalOptions="Center" HorizontalOptions="Center">
+                                        <Image.Clip>
+                                            <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
+                                        </Image.Clip>
+                                    </Image>
+                                </Border>
+                                <!-- Text and Stamp Implemented -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                    <Label Text="{Binding Text}" FontSize="14" />
+                                    <Label Text="{Binding When, Converter={StaticResource RelativeTimeConverter}}"
+                                         FontSize="12" TextColor="{StaticResource Placeholder}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ChimesViewModel}}, Path=OpenCordialCommand}"
+                                    CommandParameter="{Binding CordialId}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+        </Grid>
+    </RefreshView>
 </ContentPage>

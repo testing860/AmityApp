@@ -7,7 +7,7 @@ public interface ICordialsApi
 
     [Multipart]
     [Post("/api/cordials/save")]
-    Task<ApiResult> SaveCordialAsync(StreamPart? photo, string serializedSaveCordialDto);
+    Task<ApiResult<CordialDto>> SaveCordialAsync(StreamPart? photo, string serializedSaveCordialDto);
 
     [Get("/api/cordials")]
     Task<CordialDto[]> GetCordialsAsync([Query] int startIndex, [Query] int pageSize);
@@ -26,4 +26,10 @@ public interface ICordialsApi
 
     [Delete("/api/cordials/{cordialId}")]
     Task<ApiResult> DeleteCordialAsync(Guid cordialId);
+
+    [Get("/api/cordials/{cordialId}")]
+    Task<CordialDto?> GetCordialAsync(Guid cordialId);
+
+    [Get("/api/cordials/connections-only")]
+    Task<CordialDto[]> GetOnlyConnectionCordialsAsync(int startIndex, int pageSize);
 }

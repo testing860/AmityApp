@@ -17,6 +17,8 @@ namespace AmityApp
             Routing.RegisterRoute(nameof(AddCordialPage), typeof(AddCordialPage));
             Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
+            Routing.RegisterRoute(nameof(CropPhotoPage), typeof(CropPhotoPage));
+            Routing.RegisterRoute(nameof(RequestsPage), typeof(RequestsPage));
         }
     }
 }

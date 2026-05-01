@@ -1,6 +1,9 @@
 ﻿using AmityApp.Api.Data;
 using AmityApp.Api.Data.Entities;
+using AmityApp.Api.Endpoints;
+using AmityApp.Api.Hubs;
 using AmityApp.Api.Services;
+using AmityApp.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +24,8 @@ builder.Services.AddTransient<AuthService>()
                 .AddTransient<CordialService>()
                 .AddTransient<IPasswordHasher<User>, PasswordHasher<User>>()
                 .AddTransient<UserService>()
-                .AddTransient<PhotoUploadService>();
+                .AddTransient<PhotoUploadService>()
+                .AddTransient<ConnectionService>();
 
 
 builder.Services.AddAuthentication(options =>
@@ -59,6 +63,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -90,6 +95,8 @@ app.MapAuthEndpoints()
     .MapCordialsEndpoints()
     .MapUserEndpoints();
 
+app.MapConnectionsEndpoints();
+
 app.MapGet("/ping", () =>
 {
     var html = """
@@ -102,6 +109,7 @@ app.MapGet("/ping", () =>
     return Results.Content(html, "text/html");
 });
 
+app.MapHub<NotificationsHub>(AppConstants.HubPattern);
 app.Run();
 
 static void AutoMigrateDb(IServiceProvider sp)

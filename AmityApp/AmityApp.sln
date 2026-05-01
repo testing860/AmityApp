@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmityApp.Api", "..\AmityApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmityApp.Shared", "..\AmityApp.Shared\AmityApp.Shared.csproj", "{86EBCE86-3032-4B96-9D47-5FC81AB824C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmityApp.Tests", "..\AmityApp.Tests\AmityApp.Tests.csproj", "{565B02F9-786E-4D16-903B-72EC8B584676}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{86EBCE86-3032-4B96-9D47-5FC81AB824C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86EBCE86-3032-4B96-9D47-5FC81AB824C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86EBCE86-3032-4B96-9D47-5FC81AB824C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{565B02F9-786E-4D16-903B-72EC8B584676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{565B02F9-786E-4D16-903B-72EC8B584676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{565B02F9-786E-4D16-903B-72EC8B584676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{565B02F9-786E-4D16-903B-72EC8B584676}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

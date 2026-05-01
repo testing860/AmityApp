@@ -28,5 +28,20 @@
         "DebugTarget": "https"
       }
     ]
+  },
+  {
+    "Name": "Amity + Amity.Api SECOND EMULATOR",
+    "Projects": [
+      {
+        "Path": "AmityApp.csproj",
+        "Action": "Start",
+        "DebugTarget": "Pixel 7 - API 35 (Android 15.0 - API 35)"
+      },
+      {
+        "Path": "..\\AmityApp.Api\\AmityApp.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
   }
 ]

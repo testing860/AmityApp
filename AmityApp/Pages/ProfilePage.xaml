@@ -4,11 +4,13 @@
              x:Class="AmityApp.Pages.ProfilePage"
              xmlns:controls="clr-namespace:AmityApp.Controls"
              Title="My Profile"
-             BackgroundColor="{StaticResource Background}">
+             xmlns:vm="clr-namespace:AmityApp.ViewModels"
+             BackgroundColor="{StaticResource Background}"
+             x:DataType="vm:ProfileViewModel">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="logout.png"
-                     Clicked="OnLogoutClicked" />
+        <ToolbarItem IconImageSource="friends.svg" Command="{Binding GoToRequestsCommand}" />
+        <ToolbarItem IconImageSource="logout.png" Command="{Binding LogoutCommand}"/>
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto, *">
@@ -16,15 +18,20 @@
             <Grid>
                 <Border
                     BackgroundColor="{StaticResource Surface}"
-                    HeightRequest="100"
-                    StrokeShape="RoundRectangle 50"
-                    WidthRequest="100">
-                    <Image
+                    HeightRequest="80"
+                    StrokeShape="RoundRectangle 40"
+                    WidthRequest="80">
+                                    <Image
                         HorizontalOptions="Center"
-                        Source="user.png"
                         VerticalOptions="Center"
                         WidthRequest="80"
-                        HeightRequest="80"/>
+                        HeightRequest="80"
+                        Aspect="AspectFill"
+                        Source="{Binding UserPhotoDisplayUrl}">
+                        <Image.Clip>
+                            <EllipseGeometry Center="40,40" RadiusX="40" RadiusY="40"/>
+                        </Image.Clip>
+                    </Image>
                 </Border>
                 <Border
                     Margin="0,0,-80,0"
@@ -43,6 +50,9 @@
                     <Border.Shadow>
                         <Shadow />
                     </Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangePhotoCommand}"/>
+                    </Border.GestureRecognizers>
                 </Border>
             </Grid>
             <Label
@@ -50,12 +60,12 @@
                 FontAttributes="Bold"
                 FontSize="18"
                 HorizontalOptions="Center"
-                Text="Jim Placeholder" />
+                Text="{Binding User.Name}" />
             <Label
                 FontSize="16"
                 HorizontalOptions="Center"
-                Text="test@email.com" />
-            <BoxView Style="{StaticResource fadedLine}"/>
+                Text="{Binding User.Email}" />
+            <BoxView Style="{StaticResource fadedLine}" Margin="0, 10"/>
 
             <Border
                 Margin="0,5,0,0"
@@ -66,343 +76,113 @@
                 <Grid ColumnDefinitions="*, *">
                     <Border
                         Grid.Column="0"
-                        BackgroundColor="{StaticResource Primary}"
+                        BackgroundColor="White"
                         StrokeThickness="0">
-                        <Label
+                        <Label x:Name="myCordialsLabel"
                             HorizontalOptions="Center"
-                            Text="My Posts"
-                            TextColor="White"
+                            Text="My Cordials"
+                            TextColor="{StaticResource Primary}"
                             VerticalOptions="Center" />
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsMyCordialsTabSelected}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                <Setter TargetName="myCordialsLabel" Property="Label.TextColor" Value="White" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectMyCordialsTabCommand}" />
+                        </Border.GestureRecognizers>
                     </Border>
                     <Border
                         Grid.Column="1"
                         BackgroundColor="White"
                         StrokeThickness="0">
                         <Label
+                            x:Name="myCrownedCordialsLabel"
                             HorizontalOptions="Center"
-                            Text="Bookmarked"
+                            Text="Crowned Cordials"
                             TextColor="{StaticResource Primary}"
                             VerticalOptions="Center" />
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsCrownsTabSelected}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                <Setter TargetName="myCrownedCordialsLabel" Property="Label.TextColor" Value="White" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectMyCrownedCordialsTabCommand}" />
+                        </Border.GestureRecognizers>
                     </Border>
                 </Grid>
             </Border>
 
         </VerticalStackLayout>
 
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Spacing="15">
-                <Border Padding="0, 8" BackgroundColor="{StaticResource White}" StrokeThickness="0">
-                    <Grid RowDefinitions="Auto, 250, Auto, Auto" RowSpacing="6">
-                        <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
-                            <Border Grid.Column="0"
-                                HeightRequest="40"
-                                StrokeShape="RoundRectangle 20"
-                                BackgroundColor="{StaticResource Surface}"
-                                WidthRequest="40">
-                                <Image 
-                                     Source="user.png"
-                                     Aspect="AspectFit"
-                                     HeightRequest="30"
-                                     WidthRequest="30"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center"/>
-                            </Border>
-                            <Grid
-                                Grid.Column="1"
-                                ColumnDefinitions="Auto, Auto, Auto"
-                                ColumnSpacing="5"
-                                VerticalOptions="Center">
-                                <Label
-                                    Grid.Column="0"
-                                    FontAttributes="Bold"
-                                    Text="Jim Placeholder" />
-                                <Label
-                                    Grid.Column="1"
-                                    FontAttributes="Bold"
-                                    Text="." 
-                                    FontSize="14"
-                                    Margin="0, -7, 0, 0"
-                                    VerticalOptions="Center"/>
-                                <Label
-                                    Grid.Column="2"
-                                    FontSize="12"
-                                    Text="12 April 2026"
-                                    VerticalOptions="Center"/>
-                            </Grid>
-                        </Grid>
 
-                        <Border Grid.Row="1"
-                            BackgroundColor="{StaticResource Surface}"
-                            HeightRequest="250"
-                            StrokeThickness="0">
-                            <Image Aspect="Center"
-                               HeightRequest="250"
-                               Source="cat.png" />
-                        </Border>
-                        <Label
-                            Grid.Row="2"
-                            FontSize="15"
-                            Text="Meow, meow."
-                            TextColor="{StaticResource SecondaryDarkText}" 
-                            Padding="8, 0"/>
 
-                        <VerticalStackLayout Grid.Row="3" Spacing="10">
-                            <BoxView Style="{StaticResource fadedLine}" />
-                            <FlexLayout JustifyContent="SpaceAround">
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="candle.svg"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Light"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="bubble.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Comment"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="bookmark.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Save"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="share.svg"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Share"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                            </FlexLayout>
-                        </VerticalStackLayout>
+        <CollectionView Grid.Row="1"
+                ItemsSource="{Binding MyCordials}"
+                IsVisible="{Binding IsMyCordialsTabSelected}"
+                ItemTemplate="{StaticResource cordialDataTemplateSelector}"
+                RemainingItemsThreshold="2"
+                RemainingItemsThresholdReachedCommand="{Binding FetchMyCordialsCommand}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="15"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Spacing="5"
+                             Padding="20">
+                    <Label Text="You have not created any cordials yet."
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource SecondaryDarkText}" />
+                    <Label Text="Create one now!"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource Primary}"
+                   TextDecorations="Underline">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CreateCordialCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
 
-                    </Grid>
+        <CollectionView Grid.Row="1"
+                ItemsSource="{Binding MyCrownedCordials}"
+                IsVisible="{Binding IsCrownsTabSelected}"
+                ItemTemplate="{StaticResource cordialDataTemplateSelector}"
+                RemainingItemsThreshold="2"
+                RemainingItemsThresholdReachedCommand="{Binding FetchMyCrownedCordialsCommand}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="15"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Spacing="5"
+                             Padding="20">
+                    <Label Text="You have not crowned any cordials yet."
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource SecondaryDarkText}" />
+                    <Label Text="Explore the Chronicle now!"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource Primary}"
+                   TextDecorations="Underline">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
 
-                </Border>
-                <Border Padding="0, 8" BackgroundColor="{StaticResource White}" StrokeThickness="0">
-                    <Grid RowDefinitions="Auto, 250, Auto" RowSpacing="6">
-                        <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
-                            <Border Grid.Column="0"
-                                    HeightRequest="40"
-                                    StrokeShape="RoundRectangle 20"
-                                        BackgroundColor="{StaticResource Surface}"
-                                    WidthRequest="40">
-                                <Image 
-                                    Source="user.png"
-                                   Aspect="AspectFit"
-                                   HeightRequest="30"
-                                   WidthRequest="30"
-                                   VerticalOptions="Center"
-                                    HorizontalOptions="Center"/>
-                            </Border>
-                            <Grid
-                                Grid.Column="1"
-                                ColumnDefinitions="Auto, Auto, Auto"
-                                ColumnSpacing="5"
-                                VerticalOptions="Center">
-                                <Label
-                                    Grid.Column="0"
-                                    FontAttributes="Bold"
-                                    Text="John Doe " />
-                                <Label
-                                    Grid.Column="1"
-                                    FontAttributes="Bold"
-                                    Text="." 
-                                    FontSize="14"
-                                    Margin="0, -7, 0, 0"
-                                    VerticalOptions="Center"/>
-                                <Label
-                                    Grid.Column="2"
-                                    FontSize="12"
-                                    Text="12 April 2026"
-                                    VerticalOptions="Center"/>
-                            </Grid>
-                        </Grid>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           Grid.RowSpan="2" />
 
-                        <Border Grid.Row="1"
-                            BackgroundColor="{StaticResource Surface}"
-                                HeightRequest="250"
-                                StrokeThickness="0">
-                            <Image Aspect="Center"
-                               HeightRequest="250"
-                               Source="hallstatt.jpg" />
-                        </Border>
-
-                        <VerticalStackLayout Grid.Row="2" Spacing="10">
-                            <BoxView Style="{StaticResource fadedLine}" />
-                            <FlexLayout JustifyContent="SpaceAround">
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="candle.svg"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Light"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="bubble.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Comment"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="bookmark.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Save"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="share.svg"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Share"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                            </FlexLayout>
-                        </VerticalStackLayout>
-
-                    </Grid>
-                </Border>
-                <Border Padding="0, 8" BackgroundColor="{StaticResource White}" StrokeThickness="0">
-                    <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="6">
-                        <Grid ColumnDefinitions="40, Auto, *" ColumnSpacing="6" Padding="8, 0">
-                            <Border Grid.Column="0"
-                                HeightRequest="40"
-                                StrokeShape="RoundRectangle 20"
-                                    BackgroundColor="{StaticResource Surface}"
-                                WidthRequest="40">
-                                <Image 
-                                    Source="user.png"
-                                   Aspect="AspectFit"
-                                   HeightRequest="30"
-                                   WidthRequest="30"
-                                   VerticalOptions="Center"
-                                    HorizontalOptions="Center"/>
-                            </Border>
-                            <Grid
-                                Grid.Column="1"
-                                ColumnDefinitions="Auto, Auto, Auto"
-                                ColumnSpacing="5"
-                                VerticalOptions="Center">
-                                <Label
-                                    Grid.Column="0"
-                                    FontAttributes="Bold"
-                                    Text="Jim Placeholder" />
-                                <Label
-                                    Grid.Column="1"
-                                    FontAttributes="Bold"
-                                    Text="." 
-                                    FontSize="14"
-                                    Margin="0, -7, 0, 0"
-                                    VerticalOptions="Center"/>
-                                <Label
-                                    Grid.Column="2"
-                                    FontSize="12"
-                                    Text="12 April 2026"
-                                    VerticalOptions="Center"/>
-                            </Grid>
-                        </Grid>
-
-                        <Label
-                            Grid.Row="1"
-                            FontSize="15"
-                            Text="Meow, meow."
-                            TextColor="{StaticResource SecondaryDarkText}" 
-                            Padding="8, 0"/>
-
-                        <VerticalStackLayout Grid.Row="3" Spacing="10">
-                            <BoxView Style="{StaticResource fadedLine}" />
-                            <FlexLayout JustifyContent="SpaceAround">
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="candle.svg"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Light"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="bubble.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Comment"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="bookmark.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Save"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <controls:PrimaryColorImage 
-                                        HeightRequest="20"
-                                        Source="share.svg"
-                                        VerticalOptions="Center"
-                                        WidthRequest="20" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="Share"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                            </FlexLayout>
-                        </VerticalStackLayout>
-
-                    </Grid>
-                </Border>
-
-            </VerticalStackLayout>
-        </ScrollView>
-            
     </Grid>
 
 </ContentPage>

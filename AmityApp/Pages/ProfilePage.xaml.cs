@@ -1,24 +1,24 @@
 using AmityApp.Services;
-using CommunityToolkit.Maui.Alerts;
+using AmityApp.ViewModels;
+
 namespace AmityApp.Pages;
 
 public partial class ProfilePage : ContentPage
 {
-    private readonly AuthService _authService;
+    private readonly ProfileViewModel _viewModel;
 
-    public ProfilePage(AuthService authService)
+    public ProfilePage(ProfileViewModel profileViewModel)
     {
         InitializeComponent();
-        _authService = authService;
+        BindingContext = _viewModel = profileViewModel;
     }
 
-    private async void OnLogoutClicked(object sender, EventArgs e)
+    protected override void OnAppearing()
     {
-        var username = _authService.User?.Name ?? "User";
-        _authService.Logout();
-
-        var toast = Toast.Make($"You are now logged out, {username}!");
-        await toast.Show();
-        await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+        base.OnAppearing();
+        if (_viewModel.IsMyCordialsTabSelected && _viewModel.MyCordials.Count == 0)
+            _viewModel.SelectMyCordialsTabCommand.Execute(null);
+        else if (!_viewModel.IsMyCordialsTabSelected && _viewModel.MyCrownedCordials.Count == 0)
+            _viewModel.SelectMyCrownedCordialsTabCommand.Execute(null);
     }
 }
