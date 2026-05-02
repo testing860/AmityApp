@@ -54,18 +54,26 @@
 	  <None Remove="Platforms\Android\Resources\xml\network_security_config.xml" />
 	  <None Remove="Resources\Images\vibes\apology.svg" />
 	  <None Remove="Resources\Images\vibes\appreciation.svg" />
+	  <None Remove="Resources\Images\vibes\comfort.svg" />
 	  <None Remove="Resources\Images\vibes\gratitude.svg" />
+	  <None Remove="Resources\Images\vibes\hope.svg" />
+	  <None Remove="Resources\Images\vibes\joy.svg" />
 	  <None Remove="Resources\Images\vibes\love.svg" />
 	  <None Remove="Resources\Images\vibes\mindfulness.svg" />
+	  <None Remove="Resources\Images\vibes\sorrow.svg" />
 	  <None Remove="Resources\Images\vibes\thankyou.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiImage Include="Resources\Images\vibes\apology.svg" />
 	  <MauiImage Include="Resources\Images\vibes\appreciation.svg" />
+	  <MauiImage Include="Resources\Images\vibes\comfort.svg" />
 	  <MauiImage Include="Resources\Images\vibes\gratitude.svg" />
+	  <MauiImage Include="Resources\Images\vibes\hope.svg" />
+	  <MauiImage Include="Resources\Images\vibes\joy.svg" />
 	  <MauiImage Include="Resources\Images\vibes\love.svg" />
 	  <MauiImage Include="Resources\Images\vibes\mindfulness.svg" />
+	  <MauiImage Include="Resources\Images\vibes\sorrow.svg" />
 	  <MauiImage Include="Resources\Images\vibes\thankyou.svg" />
 	</ItemGroup>
 

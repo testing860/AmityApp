@@ -35,14 +35,25 @@
                 </Grid>
 
                 <!-- Vibe (right‑aligned) -->
-                <HorizontalStackLayout Grid.Column="2" HorizontalOptions="End"
-                           VerticalOptions="Center" Spacing="4"
-                           IsVisible="{Binding HasVibe}">
-                    <Image Source="{Binding VibeIcon}" HeightRequest="24" WidthRequest="24"
-               VerticalOptions="Center" />
-                    <Label Text="{Binding VibeDisplay}" FontSize="13" VerticalOptions="Center"
-               TextColor="{StaticResource Primary}" FontAttributes="Italic" />
-                </HorizontalStackLayout>
+                <!-- Vibe badge (solid pill, white icon via WhiteIcon control) -->
+                <Border Grid.Column="2" Padding="8,4"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        BackgroundColor="{Binding VibeColor}"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        IsVisible="{Binding HasVibe}">
+                    <HorizontalStackLayout Spacing="4">
+                        <controls:WhiteIcon Source="{Binding VibeIcon}"
+                            HeightRequest="24" WidthRequest="24"
+                            VerticalOptions="Center" />
+                        <Label Text="{Binding VibeDisplay}"
+               FontSize="14"
+                               FontAttributes="Bold"
+               VerticalOptions="Center"
+               TextColor="White" />
+                    </HorizontalStackLayout>
+                </Border>
             </Grid>
 
             <Border Grid.Row="1"

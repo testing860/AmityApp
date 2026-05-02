@@ -27,7 +27,8 @@ public partial class CordialModel : ObservableObject
     [ObservableProperty, NotifyPropertyChangedFor(nameof(CordialTemplateContentViewName))]
     private string? _content;
 
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(HasVibe), nameof(VibeIcon), nameof(VibeDisplay))]
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(HasVibe), nameof(VibeIcon),
+        nameof(VibeDisplay), nameof(VibeColor))]
     private string? _vibe;
 
     public bool HasVibe => !string.IsNullOrEmpty(Vibe);
@@ -41,7 +42,26 @@ public partial class CordialModel : ObservableObject
         "appreciation" => "vibes/appreciation.svg",
         "mindfulness" => "vibes/mindfulness.svg",
         "thank_you" => "vibes/thankyou.svg",
+        "joy" => "vibes/joy.svg",
+        "hope" => "vibes/hope.svg",
+        "comfort" => "vibes/comfort.svg",
+        "sorrow" => "vibes/sorrow.svg",
         _ => null
+    };
+
+    public Color VibeColor => _vibe switch
+    {
+        "love" => Color.FromArgb("#E74C3C"),   // red
+        "gratitude" => Color.FromArgb("#D4AC0D"),   // gold
+        "apology" => Color.FromArgb("#5DADE2"),   // light blue
+        "appreciation" => Color.FromArgb("#F06292"),   // soft warm pink (updated)
+        "mindfulness" => Color.FromArgb("#9B59B6"),   // purple
+        "thank_you" => Color.FromArgb("#FF6F64"),   // coral
+        "joy" => Color.FromArgb("#FF9800"),   // vibrant orange
+        "hope" => Color.FromArgb("#1DB954"),   // vibrant green
+        "comfort" => Color.FromArgb("#607D8B"),   // muted slate blue
+        "sorrow" => Color.FromArgb("#000000"),   // black
+        _ => Colors.Gray
     };
 
     public DateTime PostedOnDisplay { get; set; }

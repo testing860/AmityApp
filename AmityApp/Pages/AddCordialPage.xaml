@@ -6,14 +6,20 @@
              xmlns:vm="clr-namespace:AmityApp.ViewModels"
              Title="{Binding PageTitle}"
              Padding="15"
+             xmlns:converters="clr-namespace:AmityApp.Converters"
              x:DataType="vm:SaveCordialViewModel">
+    <ContentPage.Resources>
+        <converters:IsEmptyConverter x:Key="IsEmptyConverter" />
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+        <converters:IsNotEmptyConverter x:Key="IsNotEmptyConverter" />
+    </ContentPage.Resources>
 
     <Grid>
         <ScrollView>
             <Grid RowDefinitions="Auto, Auto, *, Auto, Auto" RowSpacing="5">
-                <!-- Row 0: Avatar + name / Vibe button -->
+                <!-- Row 0: Avatar + NMame / Vibe button -->
                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                    <!-- Left: avatar + name -->
+                    <!-- Left: Avatar + Name -->
                     <Grid ColumnDefinitions="40, Auto" ColumnSpacing="6" VerticalOptions="Center">
                         <Border Grid.Column="0" HeightRequest="40" StrokeShape="RoundRectangle 20"
                                 BackgroundColor="{StaticResource Surface}" WidthRequest="40">
@@ -29,7 +35,7 @@
                                Text="{Binding UserName}" VerticalOptions="Center"/>
                     </Grid>
 
-                    <!-- Right: Pick a Vibe button -->
+                    <!-- Right: Pick a Vibe Button -->
                     <Border Grid.Column="1"
                             StrokeShape="RoundRectangle 22" Stroke="#FFD700"
                             BackgroundColor="{StaticResource Secondary}" HeightRequest="36"
@@ -45,7 +51,7 @@
                     </Border>
                 </Grid>
 
-                <!-- Row 1: Visibility (left) / Current vibe (right) -->
+                <!-- Row 1: Visibility (left) / Current Vibe (right) -->
                 <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="10">
                     <HorizontalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center"
                                            HorizontalOptions="Start">
@@ -77,17 +83,32 @@
                                          Placeholder="Start typing.."
                                          Text="{Binding Content}" />
 
-                <!-- Row 3: Photo Preview + Delete Button -->
+                <!-- Row 3: Photo Preview Area -->
                 <Grid Grid.Row="3">
-                    <Border StrokeThickness="3" Stroke="{StaticResource Primary}" BackgroundColor="Transparent" HeightRequest="250">
-                        <Image HeightRequest="250" Source="{Binding PhotoPath}"/>
+                    <Border StrokeThickness="3" Stroke="{StaticResource Primary}"
+                            BackgroundColor="Transparent" HeightRequest="250">
+                        <Grid>
+                            <Image Source="photo_plus.svg"
+                                   HeightRequest="100" WidthRequest="100"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   IsVisible="{Binding PhotoPath, Converter={StaticResource IsEmptyConverter}}">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SelectPhotoCommand}" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image HeightRequest="250"
+                                   Source="{Binding PhotoPath}"
+                                   IsVisible="{Binding PhotoPath, Converter={StaticResource IsNotEmptyConverter}}" />
+                        </Grid>
                     </Border>
                     <Border StrokeShape="RoundRectangle 5" HeightRequest="40" WidthRequest="40"
-                            BackgroundColor="{StaticResource Primary}"
-                            VerticalOptions="Start"
-                            StrokeThickness="0"
-                            HorizontalOptions="End"
-                            Margin="7">
+                        BackgroundColor="{StaticResource Primary}"
+                        VerticalOptions="Start"
+                        StrokeThickness="0"
+                        HorizontalOptions="End"
+                        Margin="7"
+                        IsVisible="{Binding PhotoPath, Converter={StaticResource IsNotEmptyConverter}}">
                         <controls:WhiteIcon Source="trash.png" HeightRequest="27" WidthRequest="27" />
                         <Border.Shadow>
                             <Shadow />
@@ -96,14 +117,9 @@
                             <TapGestureRecognizer Command="{Binding RemovePhotoCommand}" />
                         </Border.GestureRecognizers>
                     </Border>
-                    <Grid.Triggers>
-                        <DataTrigger TargetType="Grid" Binding="{Binding PhotoPath}" Value="">
-                            <Setter Property="IsVisible" Value="False" />
-                        </DataTrigger>
-                    </Grid.Triggers>
                 </Grid>
 
-                <!-- Row 4: Action buttons -->
+                <!-- Row 4: Action Buttons -->
                 <FlexLayout Grid.Row="4" JustifyContent="SpaceBetween" Padding="0, 0, 0, 2">
                     <Border StrokeShape="RoundRectangle 22" Stroke="{StaticResource Primary}" Padding="15, 5">
                         <HorizontalStackLayout Spacing="5">

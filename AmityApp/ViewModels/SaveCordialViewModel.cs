@@ -179,9 +179,19 @@ public partial class SaveCordialViewModel : BaseViewModel, IQueryAttributable
             }
 
             _isPhotoNew = false;
-            OnPropertyChanged(nameof(PageTitle));
-            OnPropertyChanged(nameof(IsEditing));
         }
+        else
+        {
+            Content = string.Empty;
+            PhotoPath = string.Empty;
+            _existingPhotoUrl = null;
+            _isPhotoNew = false;
+            SelectedVibe = "None";
+            SelectedVisibility = "Public";
+        }
+
+        OnPropertyChanged(nameof(PageTitle));
+        OnPropertyChanged(nameof(IsEditing));
     }
 
     private async Task<string?> DownloadExistingPhotoAsync(string photoUrl)
@@ -220,7 +230,11 @@ public partial class SaveCordialViewModel : BaseViewModel, IQueryAttributable
         "Apology",
         "Appreciation",
         "Mindfulness",
-        "Thank You"
+        "Thank You",
+        "Joy",
+        "Hope",
+        "Comfort",
+        "Sorrow"
     };
     public List<string> VisibilityOptions { get; } = new() { "Public", "Connections Only" };
 
@@ -263,6 +277,10 @@ public partial class SaveCordialViewModel : BaseViewModel, IQueryAttributable
             "appreciation" => "vibes/appreciation.svg",
             "mindfulness" => "vibes/mindfulness.svg",
             "thank_you" => "vibes/thankyou.svg",
+            "joy" => "vibes/joy.svg",
+            "hope" => "vibes/hope.svg",
+            "comfort" => "vibes/comfort.svg",
+            "sorrow" => "vibes/sorrow.svg",
             _ => null
         };
     }

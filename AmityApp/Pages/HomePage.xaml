@@ -7,7 +7,6 @@
              xmlns:vm="clr-namespace:AmityApp.ViewModels"
              BackgroundColor="{StaticResource Background}"
              x:DataType="vm:HomeViewModel">
-
     <Shell.TitleView>
         <Grid ColumnDefinitions="Auto, *, Auto">
             <Label Grid.Column="0" 
@@ -62,30 +61,22 @@
             <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="10,10,10,0">
                 <HorizontalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center" Padding="6,0">
                     <controls:PrimaryColorImage Source="plus.png"
-                                HeightRequest="24"
-                                WidthRequest="24"/>
+                                    HeightRequest="24"
+                                    WidthRequest="24"/>
                     <Label Text="Create Cordial" FontSize="13" TextColor="{StaticResource SecondaryDarkText}" VerticalOptions="Center" />
                     <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAddCordialCommand}" />
                     </HorizontalStackLayout.GestureRecognizers>
                 </HorizontalStackLayout>
-                <Border Grid.Column="1"
-                        BackgroundColor="{StaticResource Surface}"
-                        StrokeShape="RoundRectangle 22"
-                        Stroke="#FFD700"
-                        HeightRequest="38"
-                        Padding="12,4"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center">
-                    <HorizontalStackLayout Spacing="6">
-                        <Image Source="filter.svg" HeightRequest="22" WidthRequest="22" VerticalOptions="Center" />
-                        <Label Text="{Binding FeedModeDisplay}" VerticalOptions="Center" FontSize="13"
-                               TextColor="{StaticResource Primary}" FontAttributes="Bold" />
-                    </HorizontalStackLayout>
-                    <Border.GestureRecognizers>
+
+                <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" Padding="6,0"
+                           HorizontalOptions="End">
+                    <Image Source="filter.svg" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" />
+                    <Label Text="{Binding FeedModeDisplay}" FontSize="13" TextColor="{StaticResource SecondaryDarkText}" VerticalOptions="Center" />
+                    <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SelectFeedModeCommand}" />
-                    </Border.GestureRecognizers>
-                </Border>
+                    </HorizontalStackLayout.GestureRecognizers>
+                </HorizontalStackLayout>
             </Grid>
 
             <!-- Row 1: Cordials List -->
